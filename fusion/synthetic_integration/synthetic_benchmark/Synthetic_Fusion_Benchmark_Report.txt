@@ -1,0 +1,26 @@
+NEUROSENTINEL SYNTHETIC EEG-EIT FUSION BENCHMARK
+=======================================================
+Random seed: 42
+Total synthetic observations: 1000
+Training observations: 800
+Testing observations: 200
+EEG-like features: 4
+EIT-like measurements: 8
+Target: controlled synthetic latent state (0/1)
+Pairing: generated synthetic observations only
+Scaling: fitted on training data through Pipeline
+Split: stratified 80/20 holdout
+
+MODEL METRICS
+            Model  Accuracy  Balanced_Accuracy  Macro_F1  ROC_AUC  Train_Samples  Test_Samples
+Majority_baseline     0.500              0.500  0.333333   0.5000            800           200
+         EEG_only     0.825              0.825  0.824645   0.8966            800           200
+         EIT_only     0.835              0.835  0.834897   0.9248            800           200
+   EEG_EIT_fusion     0.880              0.880  0.880000   0.9519            800           200
+
+SCIENTIFIC LIMITATIONS
+- No real EEG and EIT records were paired.
+- No patient or clinical observations were generated.
+- The shared target is an artificial simulation label.
+- This benchmark tests software-level fusion only.
+- It does not demonstrate tumour detection or recurrence prediction.

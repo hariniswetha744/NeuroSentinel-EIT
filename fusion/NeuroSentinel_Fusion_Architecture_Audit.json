@@ -1,0 +1,59 @@
+{
+    "EEG": {
+        "file_exists": true,
+        "rows": 150,
+        "features": [
+            "Delta",
+            "Theta",
+            "Alpha",
+            "Beta"
+        ],
+        "missing_values": 0,
+        "finite_numeric_values": true,
+        "sample_id_available": false,
+        "valid": true
+    },
+    "EIT": {
+        "file_exists": true,
+        "rows": 1,
+        "features": [
+            "Measurement_Count",
+            "Baseline_Voltage_Mean",
+            "Baseline_Voltage_Std",
+            "Anomaly_Voltage_Mean",
+            "Anomaly_Voltage_Std",
+            "Voltage_Change_Mean",
+            "Voltage_Change_Std",
+            "Voltage_Change_MAE",
+            "Voltage_Change_RMS",
+            "Reconstruction_Element_Count",
+            "Reconstruction_Min",
+            "Reconstruction_Max",
+            "Reconstruction_Mean",
+            "Reconstruction_Std",
+            "Reconstruction_RMS",
+            "Positive_Reconstruction_Count",
+            "Negative_Reconstruction_Count"
+        ],
+        "missing_values": 0,
+        "finite_numeric_values": true,
+        "sample_id_available": false,
+        "valid": true
+    },
+    "minimum_observations_required": 2,
+    "EEG_observation_requirement_met": true,
+    "EIT_observation_requirement_met": false,
+    "EEG_sample_ID_available": false,
+    "EIT_sample_ID_available": false,
+    "verified_matching_sample_IDs": false,
+    "artificial_pairing_performed": false,
+    "clinical_fusion_training_ready": false,
+    "fusion_architecture_data_ready": false,
+    "status": "BLOCKED_CLINICAL_DATA_REQUIREMENTS",
+    "limitations": [
+        "Current EEG data represents public motor-imagery recordings.",
+        "Current EIT data represents simulation-derived features.",
+        "The current datasets have no verified shared Sample_ID.",
+        "A valid software architecture does not establish clinical validity."
+    ]
+}

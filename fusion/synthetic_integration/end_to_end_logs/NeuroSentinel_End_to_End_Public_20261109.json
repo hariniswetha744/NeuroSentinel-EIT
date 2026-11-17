@@ -1,0 +1,57 @@
+{
+  "project": "NeuroSentinel",
+  "status": "COMPLETED_WITH_CLINICAL_FUSION_BLOCKED",
+  "started_or_logged_at": "2026-11-09T13:22:17",
+  "stages": [
+    {
+      "stage": "EEG-EIT Integration Input Preparation",
+      "script": ".\\fusion\\synthetic_integration\\build_integration_inputs.py",
+      "return_code": 0,
+      "status": "PASSED",
+      "stdout": "NEUROSENTINEL SYNTHETIC INTEGRATION INPUT AUDIT\n=======================================================\nEEG windows: 150\nEEG participants: 10\nEIT scenarios: 155\nEIT measurements per scenario: [208]\nEEG missing values: 0\nEIT missing values: 0\nEEG finite features: True\nEIT finite features: True\nShared participant/scenario identifiers: 0\nClinical pairing: NOT AVAILABLE\nFusion model training: BLOCKED\nReason: No verified paired EEG-EIT observations.\nEEG labels: Healthy motor-imagery task labels (T1/T2).\nEIT labels: Synthetic conductivity-change labels.\nThese labels are not interchangeable.\nNo tumour or recurrence labels are available.\n\nIntegration input files saved to: .\\fusion\\synthetic_integration\n",
+      "stderr": ""
+    },
+    {
+      "stage": "Real-Data Pairing Gate",
+      "script": ".\\fusion\\synthetic_integration\\fusion_pairing_gate.py",
+      "return_code": 0,
+      "status": "PASSED",
+      "stdout": "NEUROSENTINEL EEG-EIT FUSION GATE\n================================================\nEEG records: 150\nEIT records: 155\n\nBLOCKED | Common Sample_ID field | EEG=False, EIT=False\nBLOCKED | Pairing validation | No verified shared Sample_ID; fusion is blocked.\n\nFUSION ELIGIBLE: False\nCURRENT DECISION: BLOCKED\nReason: verified paired EEG-EIT observations are required.\nNo arbitrary or index-based pairing is permitted.\nNo clinical inference is supported by unpaired datasets.\n\n",
+      "stderr": ""
+    },
+    {
+      "stage": "Pairing Gate Tests",
+      "script": ".\\fusion\\synthetic_integration\\test_fusion_pairing_gate.py",
+      "return_code": 0,
+      "status": "PASSED",
+      "stdout": "NEUROSENTINEL PAIRING GATE TESTS\n================================================\nPASS | Valid matching IDs | Verified identifier correspondence\nPASS | Missing ID | EEG Sample_ID missing\nPASS | Duplicate IDs | Duplicate IDs\nPASS | Mismatched IDs | Mismatched IDs\nPASS | Empty ID | Empty EEG IDs\nPASS | Missing value | Missing IDs\n================================================\nTESTS PASSED: 6/6\nOVERALL: PASS\n",
+      "stderr": ""
+    },
+    {
+      "stage": "Fusion Interface Safety Tests",
+      "script": ".\\fusion\\test_fusion_interface.py",
+      "return_code": 0,
+      "status": "PASSED",
+      "stdout": "PASS \ufffd Missing IDs: correctly blocked\nPASS \ufffd Empty EEG: correctly blocked\nPASS \ufffd Empty EIT: correctly blocked\nPASS \ufffd Missing sample ID value: correctly blocked\nPASS \ufffd Duplicate IDs: correctly blocked\nPASS \ufffd Mismatched IDs: correctly blocked\nPASS \ufffd Valid matching IDs: one-to-one merge verified\n\nFusion safety test summary\nPassed: 7\nFailed: 0\nTotal: 7\nSTATUS: ALL FUSION SAFETY TESTS PASSED.\n",
+      "stderr": ""
+    },
+    {
+      "stage": "Synthetic Feature-Level Fusion",
+      "script": ".\\fusion\\synthetic_integration\\run_synthetic_fusion_benchmark.py",
+      "return_code": 0,
+      "status": "PASSED",
+      "stdout": "SYNTHETIC FUSION BENCHMARK COMPLETED\nDataset: .\\fusion\\synthetic_integration\\synthetic_benchmark\\Synthetic_Fusion_Benchmark_Data.csv\nMetrics: .\\fusion\\synthetic_integration\\synthetic_benchmark\\Synthetic_Fusion_Model_Metrics.csv\nReport: .\\fusion\\synthetic_integration\\synthetic_benchmark\\Synthetic_Fusion_Benchmark_Report.txt\n\nMODEL COMPARISON\n            Model  Accuracy  Balanced_Accuracy  Macro_F1  ROC_AUC  Train_Samples  Test_Samples\nMajority_baseline     0.500              0.500    0.3333   0.5000            800           200\n         EEG_only     0.825              0.825    0.8246   0.8966            800           200\n         EIT_only     0.835              0.835    0.8349   0.9248            800           200\n   EEG_EIT_fusion     0.880              0.880    0.8800   0.9519            800           200\n\nAll generated observations are marked SYNTHETIC_ONLY.\n",
+      "stderr": ""
+    },
+    {
+      "stage": "Synthetic Decision-Level Fusion",
+      "script": ".\\fusion\\synthetic_integration\\run_decision_level_fusion.py",
+      "return_code": 0,
+      "status": "PASSED",
+      "stdout": "SYNTHETIC FUSION ARCHITECTURE COMPARISON COMPLETED\nOutput folder: .\\fusion\\synthetic_integration\\synthetic_decision_level_comparison\n\nMODEL COMPARISON\n                 Model  Accuracy  Balanced_Accuracy  Macro_F1  ROC_AUC  Train_Samples  Test_Samples\n     Majority_baseline     0.500              0.500    0.3333   0.5000            800           200\n              EEG_only     0.825              0.825    0.8246   0.8966            800           200\n              EIT_only     0.835              0.835    0.8349   0.9248            800           200\n EEG_EIT_feature_level     0.880              0.880    0.8800   0.9519            800           200\nEEG_EIT_decision_level     0.885              0.885    0.8850   0.9518            800           200\n\nAll results are SYNTHETIC_ONLY.\n",
+      "stderr": ""
+    }
+  ],
+  "clinical_fusion_ready": false,
+  "clinical_recurrence_prediction_established": false
+}

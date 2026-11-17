@@ -1,0 +1,301 @@
+Model,Participant,Window,Actual_Task,Predicted_Task
+Majority-class baseline,S001,1,T1,T1
+Majority-class baseline,S001,2,T1,T1
+Majority-class baseline,S001,3,T1,T1
+Majority-class baseline,S001,4,T1,T1
+Majority-class baseline,S001,5,T1,T1
+Majority-class baseline,S001,6,T1,T1
+Majority-class baseline,S001,7,T1,T1
+Majority-class baseline,S001,8,T1,T1
+Majority-class baseline,S001,1,T2,T1
+Majority-class baseline,S001,2,T2,T1
+Majority-class baseline,S001,3,T2,T1
+Majority-class baseline,S001,4,T2,T1
+Majority-class baseline,S001,5,T2,T1
+Majority-class baseline,S001,6,T2,T1
+Majority-class baseline,S001,7,T2,T1
+Majority-class baseline,S002,1,T1,T1
+Majority-class baseline,S002,2,T1,T1
+Majority-class baseline,S002,3,T1,T1
+Majority-class baseline,S002,4,T1,T1
+Majority-class baseline,S002,5,T1,T1
+Majority-class baseline,S002,6,T1,T1
+Majority-class baseline,S002,7,T1,T1
+Majority-class baseline,S002,1,T2,T1
+Majority-class baseline,S002,2,T2,T1
+Majority-class baseline,S002,3,T2,T1
+Majority-class baseline,S002,4,T2,T1
+Majority-class baseline,S002,5,T2,T1
+Majority-class baseline,S002,6,T2,T1
+Majority-class baseline,S002,7,T2,T1
+Majority-class baseline,S002,8,T2,T1
+Majority-class baseline,S003,1,T1,T1
+Majority-class baseline,S003,2,T1,T1
+Majority-class baseline,S003,3,T1,T1
+Majority-class baseline,S003,4,T1,T1
+Majority-class baseline,S003,5,T1,T1
+Majority-class baseline,S003,6,T1,T1
+Majority-class baseline,S003,7,T1,T1
+Majority-class baseline,S003,8,T1,T1
+Majority-class baseline,S003,1,T2,T1
+Majority-class baseline,S003,2,T2,T1
+Majority-class baseline,S003,3,T2,T1
+Majority-class baseline,S003,4,T2,T1
+Majority-class baseline,S003,5,T2,T1
+Majority-class baseline,S003,6,T2,T1
+Majority-class baseline,S003,7,T2,T1
+Majority-class baseline,S004,1,T1,T1
+Majority-class baseline,S004,2,T1,T1
+Majority-class baseline,S004,3,T1,T1
+Majority-class baseline,S004,4,T1,T1
+Majority-class baseline,S004,5,T1,T1
+Majority-class baseline,S004,6,T1,T1
+Majority-class baseline,S004,7,T1,T1
+Majority-class baseline,S004,8,T1,T1
+Majority-class baseline,S004,1,T2,T1
+Majority-class baseline,S004,2,T2,T1
+Majority-class baseline,S004,3,T2,T1
+Majority-class baseline,S004,4,T2,T1
+Majority-class baseline,S004,5,T2,T1
+Majority-class baseline,S004,6,T2,T1
+Majority-class baseline,S004,7,T2,T1
+Majority-class baseline,S005,1,T1,T1
+Majority-class baseline,S005,2,T1,T1
+Majority-class baseline,S005,3,T1,T1
+Majority-class baseline,S005,4,T1,T1
+Majority-class baseline,S005,5,T1,T1
+Majority-class baseline,S005,6,T1,T1
+Majority-class baseline,S005,7,T1,T1
+Majority-class baseline,S005,1,T2,T1
+Majority-class baseline,S005,2,T2,T1
+Majority-class baseline,S005,3,T2,T1
+Majority-class baseline,S005,4,T2,T1
+Majority-class baseline,S005,5,T2,T1
+Majority-class baseline,S005,6,T2,T1
+Majority-class baseline,S005,7,T2,T1
+Majority-class baseline,S005,8,T2,T1
+Majority-class baseline,S006,1,T1,T1
+Majority-class baseline,S006,2,T1,T1
+Majority-class baseline,S006,3,T1,T1
+Majority-class baseline,S006,4,T1,T1
+Majority-class baseline,S006,5,T1,T1
+Majority-class baseline,S006,6,T1,T1
+Majority-class baseline,S006,7,T1,T1
+Majority-class baseline,S006,8,T1,T1
+Majority-class baseline,S006,1,T2,T1
+Majority-class baseline,S006,2,T2,T1
+Majority-class baseline,S006,3,T2,T1
+Majority-class baseline,S006,4,T2,T1
+Majority-class baseline,S006,5,T2,T1
+Majority-class baseline,S006,6,T2,T1
+Majority-class baseline,S006,7,T2,T1
+Majority-class baseline,S007,1,T1,T1
+Majority-class baseline,S007,2,T1,T1
+Majority-class baseline,S007,3,T1,T1
+Majority-class baseline,S007,4,T1,T1
+Majority-class baseline,S007,5,T1,T1
+Majority-class baseline,S007,6,T1,T1
+Majority-class baseline,S007,7,T1,T1
+Majority-class baseline,S007,8,T1,T1
+Majority-class baseline,S007,1,T2,T1
+Majority-class baseline,S007,2,T2,T1
+Majority-class baseline,S007,3,T2,T1
+Majority-class baseline,S007,4,T2,T1
+Majority-class baseline,S007,5,T2,T1
+Majority-class baseline,S007,6,T2,T1
+Majority-class baseline,S007,7,T2,T1
+Majority-class baseline,S008,1,T1,T1
+Majority-class baseline,S008,2,T1,T1
+Majority-class baseline,S008,3,T1,T1
+Majority-class baseline,S008,4,T1,T1
+Majority-class baseline,S008,5,T1,T1
+Majority-class baseline,S008,6,T1,T1
+Majority-class baseline,S008,7,T1,T1
+Majority-class baseline,S008,1,T2,T1
+Majority-class baseline,S008,2,T2,T1
+Majority-class baseline,S008,3,T2,T1
+Majority-class baseline,S008,4,T2,T1
+Majority-class baseline,S008,5,T2,T1
+Majority-class baseline,S008,6,T2,T1
+Majority-class baseline,S008,7,T2,T1
+Majority-class baseline,S008,8,T2,T1
+Majority-class baseline,S009,1,T1,T1
+Majority-class baseline,S009,2,T1,T1
+Majority-class baseline,S009,3,T1,T1
+Majority-class baseline,S009,4,T1,T1
+Majority-class baseline,S009,5,T1,T1
+Majority-class baseline,S009,6,T1,T1
+Majority-class baseline,S009,7,T1,T1
+Majority-class baseline,S009,8,T1,T1
+Majority-class baseline,S009,1,T2,T1
+Majority-class baseline,S009,2,T2,T1
+Majority-class baseline,S009,3,T2,T1
+Majority-class baseline,S009,4,T2,T1
+Majority-class baseline,S009,5,T2,T1
+Majority-class baseline,S009,6,T2,T1
+Majority-class baseline,S009,7,T2,T1
+Majority-class baseline,S010,1,T1,T1
+Majority-class baseline,S010,2,T1,T1
+Majority-class baseline,S010,3,T1,T1
+Majority-class baseline,S010,4,T1,T1
+Majority-class baseline,S010,5,T1,T1
+Majority-class baseline,S010,6,T1,T1
+Majority-class baseline,S010,7,T1,T1
+Majority-class baseline,S010,8,T1,T1
+Majority-class baseline,S010,1,T2,T1
+Majority-class baseline,S010,2,T2,T1
+Majority-class baseline,S010,3,T2,T1
+Majority-class baseline,S010,4,T2,T1
+Majority-class baseline,S010,5,T2,T1
+Majority-class baseline,S010,6,T2,T1
+Majority-class baseline,S010,7,T2,T1
+Logistic Regression (relative power),S001,1,T1,T2
+Logistic Regression (relative power),S001,2,T1,T1
+Logistic Regression (relative power),S001,3,T1,T2
+Logistic Regression (relative power),S001,4,T1,T2
+Logistic Regression (relative power),S001,5,T1,T1
+Logistic Regression (relative power),S001,6,T1,T1
+Logistic Regression (relative power),S001,7,T1,T2
+Logistic Regression (relative power),S001,8,T1,T1
+Logistic Regression (relative power),S001,1,T2,T1
+Logistic Regression (relative power),S001,2,T2,T1
+Logistic Regression (relative power),S001,3,T2,T1
+Logistic Regression (relative power),S001,4,T2,T1
+Logistic Regression (relative power),S001,5,T2,T1
+Logistic Regression (relative power),S001,6,T2,T1
+Logistic Regression (relative power),S001,7,T2,T1
+Logistic Regression (relative power),S002,1,T1,T1
+Logistic Regression (relative power),S002,2,T1,T1
+Logistic Regression (relative power),S002,3,T1,T1
+Logistic Regression (relative power),S002,4,T1,T1
+Logistic Regression (relative power),S002,5,T1,T1
+Logistic Regression (relative power),S002,6,T1,T1
+Logistic Regression (relative power),S002,7,T1,T2
+Logistic Regression (relative power),S002,1,T2,T1
+Logistic Regression (relative power),S002,2,T2,T1
+Logistic Regression (relative power),S002,3,T2,T1
+Logistic Regression (relative power),S002,4,T2,T1
+Logistic Regression (relative power),S002,5,T2,T1
+Logistic Regression (relative power),S002,6,T2,T1
+Logistic Regression (relative power),S002,7,T2,T1
+Logistic Regression (relative power),S002,8,T2,T1
+Logistic Regression (relative power),S003,1,T1,T1
+Logistic Regression (relative power),S003,2,T1,T1
+Logistic Regression (relative power),S003,3,T1,T1
+Logistic Regression (relative power),S003,4,T1,T2
+Logistic Regression (relative power),S003,5,T1,T1
+Logistic Regression (relative power),S003,6,T1,T1
+Logistic Regression (relative power),S003,7,T1,T1
+Logistic Regression (relative power),S003,8,T1,T2
+Logistic Regression (relative power),S003,1,T2,T1
+Logistic Regression (relative power),S003,2,T2,T2
+Logistic Regression (relative power),S003,3,T2,T1
+Logistic Regression (relative power),S003,4,T2,T2
+Logistic Regression (relative power),S003,5,T2,T1
+Logistic Regression (relative power),S003,6,T2,T1
+Logistic Regression (relative power),S003,7,T2,T1
+Logistic Regression (relative power),S004,1,T1,T2
+Logistic Regression (relative power),S004,2,T1,T2
+Logistic Regression (relative power),S004,3,T1,T2
+Logistic Regression (relative power),S004,4,T1,T2
+Logistic Regression (relative power),S004,5,T1,T2
+Logistic Regression (relative power),S004,6,T1,T2
+Logistic Regression (relative power),S004,7,T1,T2
+Logistic Regression (relative power),S004,8,T1,T2
+Logistic Regression (relative power),S004,1,T2,T2
+Logistic Regression (relative power),S004,2,T2,T2
+Logistic Regression (relative power),S004,3,T2,T2
+Logistic Regression (relative power),S004,4,T2,T2
+Logistic Regression (relative power),S004,5,T2,T2
+Logistic Regression (relative power),S004,6,T2,T1
+Logistic Regression (relative power),S004,7,T2,T2
+Logistic Regression (relative power),S005,1,T1,T1
+Logistic Regression (relative power),S005,2,T1,T1
+Logistic Regression (relative power),S005,3,T1,T1
+Logistic Regression (relative power),S005,4,T1,T1
+Logistic Regression (relative power),S005,5,T1,T1
+Logistic Regression (relative power),S005,6,T1,T2
+Logistic Regression (relative power),S005,7,T1,T2
+Logistic Regression (relative power),S005,1,T2,T1
+Logistic Regression (relative power),S005,2,T2,T1
+Logistic Regression (relative power),S005,3,T2,T1
+Logistic Regression (relative power),S005,4,T2,T1
+Logistic Regression (relative power),S005,5,T2,T1
+Logistic Regression (relative power),S005,6,T2,T1
+Logistic Regression (relative power),S005,7,T2,T1
+Logistic Regression (relative power),S005,8,T2,T1
+Logistic Regression (relative power),S006,1,T1,T2
+Logistic Regression (relative power),S006,2,T1,T2
+Logistic Regression (relative power),S006,3,T1,T1
+Logistic Regression (relative power),S006,4,T1,T2
+Logistic Regression (relative power),S006,5,T1,T1
+Logistic Regression (relative power),S006,6,T1,T1
+Logistic Regression (relative power),S006,7,T1,T1
+Logistic Regression (relative power),S006,8,T1,T1
+Logistic Regression (relative power),S006,1,T2,T1
+Logistic Regression (relative power),S006,2,T2,T2
+Logistic Regression (relative power),S006,3,T2,T1
+Logistic Regression (relative power),S006,4,T2,T2
+Logistic Regression (relative power),S006,5,T2,T2
+Logistic Regression (relative power),S006,6,T2,T1
+Logistic Regression (relative power),S006,7,T2,T1
+Logistic Regression (relative power),S007,1,T1,T2
+Logistic Regression (relative power),S007,2,T1,T2
+Logistic Regression (relative power),S007,3,T1,T2
+Logistic Regression (relative power),S007,4,T1,T2
+Logistic Regression (relative power),S007,5,T1,T2
+Logistic Regression (relative power),S007,6,T1,T2
+Logistic Regression (relative power),S007,7,T1,T2
+Logistic Regression (relative power),S007,8,T1,T2
+Logistic Regression (relative power),S007,1,T2,T2
+Logistic Regression (relative power),S007,2,T2,T2
+Logistic Regression (relative power),S007,3,T2,T2
+Logistic Regression (relative power),S007,4,T2,T2
+Logistic Regression (relative power),S007,5,T2,T2
+Logistic Regression (relative power),S007,6,T2,T2
+Logistic Regression (relative power),S007,7,T2,T2
+Logistic Regression (relative power),S008,1,T1,T1
+Logistic Regression (relative power),S008,2,T1,T1
+Logistic Regression (relative power),S008,3,T1,T1
+Logistic Regression (relative power),S008,4,T1,T2
+Logistic Regression (relative power),S008,5,T1,T1
+Logistic Regression (relative power),S008,6,T1,T2
+Logistic Regression (relative power),S008,7,T1,T1
+Logistic Regression (relative power),S008,1,T2,T1
+Logistic Regression (relative power),S008,2,T2,T1
+Logistic Regression (relative power),S008,3,T2,T1
+Logistic Regression (relative power),S008,4,T2,T1
+Logistic Regression (relative power),S008,5,T2,T2
+Logistic Regression (relative power),S008,6,T2,T1
+Logistic Regression (relative power),S008,7,T2,T1
+Logistic Regression (relative power),S008,8,T2,T1
+Logistic Regression (relative power),S009,1,T1,T2
+Logistic Regression (relative power),S009,2,T1,T2
+Logistic Regression (relative power),S009,3,T1,T2
+Logistic Regression (relative power),S009,4,T1,T2
+Logistic Regression (relative power),S009,5,T1,T2
+Logistic Regression (relative power),S009,6,T1,T2
+Logistic Regression (relative power),S009,7,T1,T2
+Logistic Regression (relative power),S009,8,T1,T2
+Logistic Regression (relative power),S009,1,T2,T2
+Logistic Regression (relative power),S009,2,T2,T2
+Logistic Regression (relative power),S009,3,T2,T2
+Logistic Regression (relative power),S009,4,T2,T2
+Logistic Regression (relative power),S009,5,T2,T2
+Logistic Regression (relative power),S009,6,T2,T2
+Logistic Regression (relative power),S009,7,T2,T2
+Logistic Regression (relative power),S010,1,T1,T1
+Logistic Regression (relative power),S010,2,T1,T1
+Logistic Regression (relative power),S010,3,T1,T2
+Logistic Regression (relative power),S010,4,T1,T2
+Logistic Regression (relative power),S010,5,T1,T2
+Logistic Regression (relative power),S010,6,T1,T2
+Logistic Regression (relative power),S010,7,T1,T2
+Logistic Regression (relative power),S010,8,T1,T2
+Logistic Regression (relative power),S010,1,T2,T1
+Logistic Regression (relative power),S010,2,T2,T2
+Logistic Regression (relative power),S010,3,T2,T1
+Logistic Regression (relative power),S010,4,T2,T2
+Logistic Regression (relative power),S010,5,T2,T1
+Logistic Regression (relative power),S010,6,T2,T2
+Logistic Regression (relative power),S010,7,T2,T2

@@ -1,0 +1,18 @@
+NEUROSENTINEL SYNTHETIC INTEGRATION INPUT AUDIT
+=======================================================
+EEG windows: 150
+EEG participants: 10
+EIT scenarios: 155
+EIT measurements per scenario: [208]
+EEG missing values: 0
+EIT missing values: 0
+EEG finite features: True
+EIT finite features: True
+Shared participant/scenario identifiers: 0
+Clinical pairing: NOT AVAILABLE
+Fusion model training: BLOCKED
+Reason: No verified paired EEG-EIT observations.
+EEG labels: Healthy motor-imagery task labels (T1/T2).
+EIT labels: Synthetic conductivity-change labels.
+These labels are not interchangeable.
+No tumour or recurrence labels are available.

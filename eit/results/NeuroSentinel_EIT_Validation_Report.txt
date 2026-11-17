@@ -1,0 +1,41 @@
+NEUROSENTINEL - EIT VALIDATION REPORT
+=======================================================
+
+1. SIMULATION CONFIGURATION
+Mesh nodes: 313
+Mesh elements: 576
+Baseline measurements: 208
+Anomaly measurements: 208
+True simulated anomaly elements: 14
+
+2. MEASUREMENT CONSISTENCY
+Consistency error: 0
+
+3. RECONSTRUCTION METRICS
+RMSE: 0.06146590
+MAE: 0.02732536
+Dice: 1.0000
+IoU: 1.0000
+False positives: 0
+False negatives: 0
+
+4. NOISE ROBUSTNESS
+Noise: 1% | Trials: 10 | Successes: 10 | Success rate: 100.0% | Mean localization error: 0.033319103
+Noise: 5% | Trials: 10 | Successes: 5 | Success rate: 50.0% | Mean localization error: 0.174701971
+Noise: 10% | Trials: 10 | Successes: 0 | Success rate: 0.0% | Mean localization error: 0.763692197
+
+5. DATA INTEGRITY
+Noise trial records: 30
+Missing trial values: 0
+Noise levels: 3
+Trial records: 10 per noise level
+
+6. LIMITATIONS
+These results are from simulated EIT data.
+They do not establish clinical brain-tumour detection.
+Perfect Dice and IoU apply only to this known-size
+simulated localization setup.
+The noise-generation source script was not located.
+No patient data or clinical validation was used.
+
+END OF REPORT

@@ -1,0 +1,3 @@
+Model,Windows,Participants,Accuracy,Balanced_Accuracy,Macro_F1
+Majority-class baseline,150,10,0.5133333333333333,0.5,0.3392070484581498
+C3/C4 Mu-Beta Logistic Regression,150,10,0.5733333333333334,0.573385518590998,0.5732574679943101

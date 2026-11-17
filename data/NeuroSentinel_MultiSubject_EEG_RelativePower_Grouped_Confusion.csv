@@ -1,0 +1,9 @@
+Model,Actual_Task,Predicted_Task,Count
+Majority-class baseline,T1,T1,77
+Majority-class baseline,T1,T2,0
+Majority-class baseline,T2,T1,73
+Majority-class baseline,T2,T2,0
+Logistic Regression (relative power),T1,T1,33
+Logistic Regression (relative power),T1,T2,44
+Logistic Regression (relative power),T2,T1,43
+Logistic Regression (relative power),T2,T2,30
