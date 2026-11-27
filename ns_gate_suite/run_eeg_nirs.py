@@ -15,6 +15,9 @@ from ns_gate import eeg_nirs_real as E
 ap = argparse.ArgumentParser()
 ap.add_argument("--eeg-root", required=True); ap.add_argument("--nirs-root", required=True)
 ap.add_argument("--inspect", action="store_true"); ap.add_argument("--trials", type=int, default=300)
+ap.add_argument("--n", type=int, nargs="+", default=[100, 200], help="batch sizes")
+ap.add_argument("--standardize", nargs="+", default=["subject", "none"])
+ap.add_argument("--out", default="exp7_eeg_nirs.json")
 a = ap.parse_args()
 
 
@@ -43,10 +46,11 @@ xe, xn, subj, ses, y, info = E.build_trials(a.eeg_root, a.nirs_root)
 print(f"trials: {len(y)}  (EEG features {xe.shape[1]}, NIRS features {xn.shape[1]})", info)
 res = {"dataset": "Shin et al. hybrid EEG-NIRS BCI, dataset A (motor imagery, sessions 1/3/5)",
        "channels": info, "python": platform.python_version(), "runs": {}}
-for std in ("subject", "none"):
+for std in a.standardize:
     print(f"\n== features standardized: {std}")
-    res["runs"][std] = E.run(xe, xn, subj, y, standardize=std, trials=a.trials)
+    res["runs"][std] = E.run(xe, xn, subj, y, standardize=std, trials=a.trials, n_grid=tuple(a.n))
 res["runtime_s"] = round(time.time() - t0, 1)
-out = Path(__file__).parent / "outputs" / "exp7_eeg_nirs.json"; out.parent.mkdir(exist_ok=True)
+res["batch_sizes"] = a.n
+out = Path(__file__).parent / "outputs" / a.out; out.parent.mkdir(exist_ok=True)
 out.write_text(json.dumps(res, indent=2, default=lambda o: o.tolist() if hasattr(o, "tolist") else str(o)))
 print("\nsaved", out)

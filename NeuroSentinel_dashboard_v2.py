@@ -54,7 +54,7 @@ def show_table(filename):
         )
 
 overview, paper, extra, eeg, eit, files, fusion, window_comparison = st.tabs([
-    "Overview", "Paper Results (IEEE v10)", "Extensions & Real-Data Check", "EEG Analysis", "EIT Validation",
+    "Overview", "Paper Results (IEEE v11)", "Extensions & Real-Data Check", "EEG Analysis", "EIT Validation",
     "Data Tables", "Fusion Readiness", "EEG Window Comparison"
 ])
 
@@ -84,7 +84,7 @@ def paper_figure(name, caption):
 with paper:
     st.header("Silent Mispairing in EEG–EIT Fusion: Paper Results")
     st.info(
-        "Results behind the IEEE manuscript (v10). Pairing experiments use a synthetic "
+        "Results behind the IEEE manuscript (v11). Pairing experiments use a synthetic "
         "generator, the EIT detector uses simulated pyEIT frames, and the EEG test uses "
         "public PhysioNet data. Software-only; no clinical claim. Every number below is "
         "read from the files in paper_results/, produced by ns_gate_suite/run_all.py."
@@ -202,7 +202,7 @@ with extra:
         "Four follow-up experiments. E1–E3 use the same synthetic generator as the paper "
         "(N = 200 records per batch, r = 0.5); Experiment 7 uses real, simultaneously recorded "
         "EEG + NIRS. Every number is read from files in paper_results/extensions/ and "
-        "paper_results/exp7_eeg_nirs.json. These results are not yet in the manuscript."
+        "paper_results/exp7_eeg_nirs.json. E2, E3 and Experiment 7 are summarized in manuscript v11 (Section IV-I, Table V, Section V)."
     )
 
     st.subheader("E2. Accumulating evidence over successive batches")
@@ -263,30 +263,47 @@ with extra:
                    "and copy outputs/exp7_eeg_nirs.json into paper_results/.")
     else:
         run = e7["runs"]["subject"]
+        e7b = paper_json("exp7b_large_batches.json")
+        rows = list(run["rows"]) + (list(e7b["runs"]["subject"]["rows"]) if e7b else [])
         st.markdown(
             f"**Data:** {e7['dataset']}. {run['n_trials']} trials from {run['n_subjects']} subjects; "
-            f"reference half {len(run['reference_subjects'])} subjects, test half {len(run['test_subjects'])} subjects "
-            f"(all rates below are on the test half)."
+            f"subjects {run['reference_subjects'][0]}–{run['reference_subjects'][-1]} set the reference, "
+            f"subjects {run['test_subjects'][0]}–{run['test_subjects'][-1]} are the test set (all rates below)."
         )
         m = st.columns(2)
-        m[0].metric("EEG–NIRS dependence on correct pairs (Pillai trace, test half)", f"{run['test_half_pillai']:.4f}")
+        m[0].metric("EEG–NIRS dependence on correct pairs (Pillai trace, test half)", f"{run['test_half_pillai']:.3f}")
         m[1].metric("Permutation p-value for that dependence", f"{run['test_half_perm_p']:.3f}")
-        for std, label in (("subject", "features standardized within subject"), ("none", "raw features")):
-            r = pd.DataFrame(e7["runs"][std]["rows"])
-            for c in ("cca_calib", "cca_perm", "learned_calib", "combined"):
-                r[c] = (100 * r[c]).round(1)
-            st.markdown(f"**Block rate (%), {label}**")
-            st.dataframe(r[["n", "fault", "q", "cca_calib", "cca_perm", "learned_calib", "combined"]]
-                         .rename(columns={"n": "N", "fault": "Fault", "q": "q", "cca_calib": "CCA calib.",
-                                          "cca_perm": "CCA perm.", "learned_calib": "Learned calib.",
-                                          "combined": "Combined"}),
-                         hide_index=True, width="stretch")
-        st.error(
-            "Finding: on real EEG–NIRS motor-imagery trial features the cross-modal dependence is very weak, "
-            "so the dependence predicate has little power (compare the q = 0 and q = 1 rows), and the learned "
-            "scorer's calibration does not transfer to unseen subjects (its clean false-block rate is far above 5%). "
-            "This is the r ≈ 0 regime the paper describes: the gate is only usable after the dependence has been "
-            "measured on a trusted paired subset from the same population."
+        d = pd.DataFrame(rows)
+        st.markdown("**Calibrated CCA block rate (%) by batch size (Table V of the paper)**")
+        tv = pd.DataFrame({
+            "Batch size N": sorted(d.n.unique()),
+        })
+        def cell(n, fault, q, col="cca_calib"):
+            r = d[(d.n == n) & (d.fault == fault) & (d.q == q)]
+            return round(100 * float(r[col].iloc[0]), 1) if len(r) else None
+        tv["Clean (false block)"] = [cell(n, "random", 0.0) for n in tv["Batch size N"]]
+        tv["50% mispaired"] = [cell(n, "random", 0.5) for n in tv["Batch size N"]]
+        tv["100% mispaired"] = [cell(n, "random", 1.0) for n in tv["Batch size N"]]
+        tv["Within-subject swap"] = [cell(n, "within-subject", 1.0) for n in tv["Batch size N"]]
+        st.dataframe(tv, hide_index=True, width="stretch")
+        st.line_chart(tv.set_index("Batch size N")[["Clean (false block)", "100% mispaired", "Within-subject swap"]],
+                      x_label="Batch size N", y_label="Batches blocked (%)")
+        st.markdown("**All statistics, all faults (features standardized within subject)**")
+        full = d.copy()
+        for c in ("cca_calib", "cca_perm", "learned_calib", "combined"):
+            full[c] = (100 * full[c]).round(1)
+        st.dataframe(full[["n", "fault", "q", "cca_calib", "cca_perm", "learned_calib", "combined"]]
+                     .rename(columns={"n": "N", "fault": "Fault", "cca_calib": "CCA calib.",
+                                      "cca_perm": "CCA perm. (no dependence found)", "learned_calib": "Learned calib.",
+                                      "combined": "Combined"}),
+                     hide_index=True, width="stretch")
+        lc = d[(d.fault == "random") & (d.q == 0.0)].learned_calib
+        st.warning(
+            f"Finding: real EEG–NIRS trial features share only weak information, so detection rises with batch size "
+            f"but stays modest (up to {100 * d[(d.fault == 'random') & (d.q == 1.0)].cca_calib.max():.1f}% of fully "
+            f"mispaired batches). The calibrated CCA rule keeps clean false blocks low on unseen subjects, while the "
+            f"learned scorer does not transfer across people (clean false blocks {100 * lc.min():.0f}–{100 * lc.max():.0f}%). "
+            "Before using the gate, measure the dependence on a trusted paired subset from the same population."
         )
 
 with overview:
@@ -301,14 +318,14 @@ with overview:
     st.subheader("Project status")
     st.markdown(
         "**Done**\n"
-        "- IEEE manuscript v10 (regular and double-blind), 6 pages, IEEE A4 conference template; "
-        "28 references, all after 2010 except the two PhysioNet dataset citations, numbered in order of first citation.\n"
+        "- IEEE manuscript v11 (regular and double-blind), 6 pages, IEEE A4 conference template; "
+        "29 references, all after 2010 except the two PhysioNet dataset citations, numbered in order of first citation.\n"
         "- Pairing-validity gate (P1–P9), learned matched-pair baseline, EIT GLRT detector, held-out EEG test (Table III).\n"
         "- Extensions: sequential testing (E2), combined CCA + learned rule (E3), record-level flagging (E1).\n"
-        "- Experiment 7: gate run on real simultaneous EEG + NIRS from 29 subjects.\n\n"
+        "- Experiment 7: gate run on real simultaneous EEG + NIRS from 29 subjects (batch sizes 100–450), reported in v11 Section IV-I and Table V.\n\n"
         "**Open**\n"
-        "- Decide with the guide how Experiment 7 and E1–E3 enter the paper.\n"
-        "- IEEE requires an AI-use statement in the Acknowledgment; v10 has none (removed on request)."
+        "- Review v11 with the guide.\n"
+        "- IEEE requires an AI-use statement in the Acknowledgment; v11 has none (removed on request)."
     )
 
     c1, c2 = st.columns(2)
