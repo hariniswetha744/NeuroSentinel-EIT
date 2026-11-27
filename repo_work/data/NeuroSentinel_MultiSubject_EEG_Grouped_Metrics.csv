@@ -1,3 +1,0 @@
-Model,Windows,Participants,Accuracy,Balanced_Accuracy,Macro_F1
-Majority-class baseline,150,10,0.5133333333333333,0.5,0.3392070484581498
-Logistic Regression,150,10,0.4866666666666667,0.49288382850026685,0.46055765727896875

@@ -1,9 +1,0 @@
-NeuroSentinel synthetic EIT severity regression
-Training severities: 0.0, 0.5, 1.0
-Testing severities: 0.25, 0.75
-Training scenarios: 93
-Testing scenarios: 62
-MAE: 0.129155
-RMSE: 0.175976
-R2: 0.504517
-Synthetic experiments only; not clinical validation.
