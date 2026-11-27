@@ -56,3 +56,8 @@ The dashboard is designed for repository-relative paths. See the Streamlit Commu
 - `ns_gate_suite/run_extensions.py` → E1 record-level flagging, E2 sequential testing, E3 combined CCA + learned rule (outputs in `paper_results/extensions/`).
 - `ns_gate_suite/run_eeg_nirs.py` → Experiment 7, the gate on real simultaneous EEG + NIRS (TU Berlin hybrid BCI dataset A, 29 subjects); see `ns_gate_suite/RUN_EXP7.md`. Copy `outputs/exp7_eeg_nirs.json` into `paper_results/`.
 - Dashboard tab "Extensions & Real-Data Check" shows all of these, read from the files.
+
+## Update (v14): power rule and repair
+- `ns_gate_suite/ns_gate/theory.py`, `run_theory.py` → power and sample-size rule, Eq. (7)–(8); validation in `outputs/novelty/theory_sim.json`.
+- `run_theory_real.py` → pre-declared test of the rule on real EEG–NIRS (`paper_results/exp8_theory_real.json`).
+- `ns_gate_suite/ns_gate/repair.py`, `run_repair.py` → repair of shift faults (`outputs/novelty/repair.json`).

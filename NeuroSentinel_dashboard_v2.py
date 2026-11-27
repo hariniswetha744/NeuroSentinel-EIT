@@ -54,7 +54,7 @@ def show_table(filename):
         )
 
 overview, paper, extra, eeg, eit, files, fusion, window_comparison = st.tabs([
-    "Overview", "Paper Results (IEEE v11)", "Extensions & Real-Data Check", "EEG Analysis", "EIT Validation",
+    "Overview", "Paper Results (IEEE v14)", "Extensions, Theory & Repair", "EEG Analysis", "EIT Validation",
     "Data Tables", "Fusion Readiness", "EEG Window Comparison"
 ])
 
@@ -84,7 +84,7 @@ def paper_figure(name, caption):
 with paper:
     st.header("Silent Mispairing in EEG–EIT Fusion: Paper Results")
     st.info(
-        "Results behind the IEEE manuscript (v11). Pairing experiments use a synthetic "
+        "Results behind the IEEE manuscript (v14). Pairing experiments use a synthetic "
         "generator, the EIT detector uses simulated pyEIT frames, and the EEG test uses "
         "public PhysioNet data. Software-only; no clinical claim. Every number below is "
         "read from the files in paper_results/, produced by ns_gate_suite/run_all.py."
@@ -176,7 +176,7 @@ with paper:
             )
             paper_figure("figure_2_acquisition.png", "Fig. 2: EEG electrode layout, simulated EIT anomaly, GLRT map, dashboard")
 
-        st.subheader("7. Cost (Table IV)")
+        st.subheader("7. Cost (Section IV-H; table removed from v14)")
         ov = paper_csv("table_IV_overhead.csv")
         if ov is not None:
             st.dataframe(ov.round(3), hide_index=True, width="stretch")
@@ -188,6 +188,12 @@ with paper:
 
 
 EXT = PAPER / "extensions"
+
+
+def ext_json_n(name):
+    import json
+    path = PAPER / "novelty" / name
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
 
 
 def ext_json(name):
@@ -274,7 +280,7 @@ with extra:
         m[0].metric("EEG–NIRS dependence on correct pairs (Pillai trace, test half)", f"{run['test_half_pillai']:.3f}")
         m[1].metric("Permutation p-value for that dependence", f"{run['test_half_perm_p']:.3f}")
         d = pd.DataFrame(rows)
-        st.markdown("**Calibrated CCA block rate (%) by batch size (Table V of the paper)**")
+        st.markdown("**Calibrated CCA block rate (%) by batch size (Table IV of the paper)**")
         tv = pd.DataFrame({
             "Batch size N": sorted(d.n.unique()),
         })
@@ -306,11 +312,59 @@ with extra:
             "Before using the gate, measure the dependence on a trusted paired subset from the same population."
         )
 
+
+    st.divider()
+    st.header("Novelty: power rule and repair (paper v14)")
+    th = ext_json_n("theory_sim.json")
+    if th is None:
+        st.info("novelty/theory_sim.json not found. Run ns_gate_suite/run_theory.py.")
+    else:
+        st.subheader("Power and sample-size rule: predicted vs simulated (Fig. 5d)")
+        sA, sB = th["summary"]["A"], th["summary"]["B"]
+        m = st.columns(3)
+        m[0].metric("Mean error, generator A", f"{100 * sA['mae']:.1f} pts")
+        m[1].metric("Mean error, generator B", f"{100 * sB['mae']:.1f} pts")
+        ssp = [c["simulated_power_at_N_star"] for c in th["sample_size_checks"]]
+        m[2].metric("Simulated power at rule's N* (target 80%)", f"{100 * min(ssp):.0f}–{100 * max(ssp):.0f}%")
+        d = pd.DataFrame(th["rows"])
+        st.scatter_chart(d, x="predicted", y="empirical", color="family", x_label="Predicted power, Eq. (8)",
+                         y_label="Simulated power")
+        st.dataframe(pd.DataFrame(th["sample_size_checks"]).round(3), hide_index=True, width="stretch")
+    e8 = paper_json("exp8_theory_real.json")
+    if e8 is not None:
+        st.subheader("Theory on real EEG–NIRS (Table IV, column 'q = 1 pred.')")
+        st.markdown(f"Dependence θ: reference subjects **{e8['reference_half']['theta']:.3f}**, "
+                    f"test subjects **{e8['test_half']['theta']:.3f}**. Prediction rules were fixed before the run.")
+        d = pd.DataFrame(e8["rows"])
+        d["error B (pts)"] = (100 * (d.pred_B_two_population - d.measured)).round(1)
+        for c in ("pred_A_practitioner", "pred_B_two_population", "measured"):
+            d[c] = (100 * d[c]).round(1)
+        st.dataframe(d[["N", "q", "measured", "pred_B_two_population", "pred_A_practitioner", "error B (pts)"]]
+                     .rename(columns={"measured": "Measured (%)", "pred_B_two_population": "Two-population (%)",
+                                      "pred_A_practitioner": "Reference only (%)"}), hide_index=True, width="stretch")
+        st.caption("Two-population: reference θ for the threshold, test θ for test batches, finite-pool correction. "
+                   "Reference only: what a user without test data would predict.")
+    rp_ = ext_json_n("repair.json")
+    if rp_ is not None:
+        st.subheader("Repairing shift faults (Table V)")
+        d = pd.DataFrame(rp_["rows"])
+        for c in ("blocked", "repaired_of_all"):
+            d[c] = (100 * d[c]).round(1)
+        st.dataframe(d[["fault", "blocked", "repaired_of_all", "acc_ungated", "acc_gate_fallback", "acc_gate_repair",
+                        "shift_correct_of_repaired", "median_k_error_when_shift_correct"]].round(3)
+                     .rename(columns={"fault": "Fault", "blocked": "Blocked (%)", "repaired_of_all": "Repaired (%)",
+                                      "acc_ungated": "Acc. ungated", "acc_gate_fallback": "Acc. fallback",
+                                      "acc_gate_repair": "Acc. repair", "shift_correct_of_repaired": "Right shift",
+                                      "median_k_error_when_shift_correct": "Median row error"}),
+                     hide_index=True, width="stretch")
+        st.caption("Repair is accepted only if its dependence gain beats the 95th percentile of chance gains on randomly "
+                   "mispaired batches built from trusted pairs, and the repaired batch passes the calibrated test.")
+
 with overview:
     st.header("Project Overview")
     st.info(
         "The 'Paper Results' tab holds the results reported in the IEEE manuscript (v10); the "
-        "'Extensions & Real-Data Check' tab holds the follow-up experiments. "
+        "'Extensions, Theory & Repair' tab holds the follow-up experiments. "
         "The other tabs show earlier archived project results (EIDORS EIT, initial "
         "fusion benchmark), which the manuscript does not use."
     )
@@ -318,14 +372,15 @@ with overview:
     st.subheader("Project status")
     st.markdown(
         "**Done**\n"
-        "- IEEE manuscript v11 (regular and double-blind), 6 pages, IEEE A4 conference template; "
+        "- IEEE manuscript v14 (regular and double-blind), 6 pages, IEEE A4 conference template; "
         "29 references, all after 2010 except the two PhysioNet dataset citations, numbered in order of first citation.\n"
         "- Pairing-validity gate (P1–P9), learned matched-pair baseline, EIT GLRT detector, held-out EEG test (Table III).\n"
         "- Extensions: sequential testing (E2), combined CCA + learned rule (E3), record-level flagging (E1).\n"
+        "- Novelty (v14): power and sample-size rule, Eq. (7)–(8), validated in simulation and on real EEG–NIRS; repair of shift faults (Table V).\n"
         "- Experiment 7: gate run on real simultaneous EEG + NIRS from 29 subjects (batch sizes 100–450), reported in v11 Section IV-I and Table V.\n\n"
         "**Open**\n"
-        "- Review v11 with the guide.\n"
-        "- IEEE requires an AI-use statement in the Acknowledgment; v11 has none (removed on request)."
+        "- Review v14 with the guide.\n"
+        "- IEEE requires an AI-use statement in the Acknowledgment; v14 has none (removed on request)."
     )
 
     c1, c2 = st.columns(2)

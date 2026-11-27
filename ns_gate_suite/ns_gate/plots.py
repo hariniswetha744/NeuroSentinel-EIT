@@ -105,9 +105,11 @@ _PRINT = {"font.size": 7.5, "axes.titlesize": 7.5, "axes.labelsize": 7.5, "legen
           "xtick.labelsize": 7, "ytick.labelsize": 7, "lines.markersize": 3.2, "lines.linewidth": 1.2}
 
 
-def figure_b_print(df, out, width=5.4):
+def figure_b_print(df, out, width=5.4, theory=None):
+    """theory: rows of outputs/novelty/theory_sim.json -> adds panel (d), predicted vs simulated."""
     with plt.rc_context(_PRINT):
-        fig, axs = plt.subplots(1, 3, figsize=(width, 2.3), sharey=True)
+        k = 4 if theory else 3
+        fig, axs = plt.subplots(1, k, figsize=(width, 2.3), sharey=True)
         sub = df[df.panel == "N"]
         for c, (n, g) in zip(SEQ, sub.groupby("n")):
             axs[0].plot(g.q, g.calib_cca, color=c, marker="o", label=f"{n}")
@@ -130,9 +132,21 @@ def figure_b_print(df, out, width=5.4):
                      columnspacing=0.5, handlelength=1.2, handletextpad=0.3, title=t, title_fontsize=7,
                      borderaxespad=0, labelspacing=0.2)
         axs[0].set_ylabel("Detection power")
+        if theory:
+            a = axs[3]
+            for fam, c, mk in (("A", BLUE, "o"), ("B", ORANGE, "s")):
+                rr = [t for t in theory if t["family"] == fam]
+                a.scatter([t["predicted"] for t in rr], [t["empirical"] for t in rr], s=7, color=c, marker=mk,
+                          lw=0, alpha=0.8, label=f"gen. {fam}")
+            a.plot([0, 1], [0, 1], color=GRAY, lw=0.8, ls=":")
+            a.set_xlim(-0.03, 1.03); a.set_xticks([0, 0.5, 1]); a.set_xlabel("Predicted power, (8)")
+            a.set_title("(d) Theory", loc="left")
+            a.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.4), ncol=2, handletextpad=0.2,
+                     title="160 settings; y-axis: simulated", title_fontsize=7, borderaxespad=0)
         fig.tight_layout(w_pad=0.4)
-        fig.savefig(out / "figure_B_power_print.png", dpi=300, bbox_inches="tight", pad_inches=0.02)
-        fig.savefig(out / "figure_B_power_print.pdf", bbox_inches="tight", pad_inches=0.02)
+        name = "figure_B_power_theory_print" if theory else "figure_B_power_print"
+        fig.savefig(out / f"{name}.png", dpi=300, bbox_inches="tight", pad_inches=0.02)
+        fig.savefig(out / f"{name}.pdf", bbox_inches="tight", pad_inches=0.02)
         plt.close(fig)
 
 

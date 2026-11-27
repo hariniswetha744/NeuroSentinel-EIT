@@ -18,7 +18,7 @@ CH = ("FC5 FC3 FC1 FCz FC2 FC4 FC6 C5 C3 C1 Cz C2 C4 C6 CP5 CP3 CP1 CPz CP2 CP4 
       "PO4 PO8 O1 Oz O2 Iz").split()
 
 
-def eeg_panel(ax):
+def eeg_panel(ax, fs=6.6, short=False):
     import mne
     mont = mne.channels.make_standard_montage("standard_1005")  # 10-05 positions
     pos = mont.get_positions()["ch_pos"]
@@ -35,12 +35,12 @@ def eeg_panel(ax):
     ax.scatter(xy[other, 0], xy[other, 1], s=5, color="#b0b0b0", zorder=3)
     ax.scatter(xy[sel, 0], xy[sel, 1], s=40, color="#257de0", zorder=4, edgecolor="white", lw=0.8)
     for i in sel:
-        ax.text(xy[i, 0], xy[i, 1] + 0.11, CH[i], ha="center", fontsize=6.5, color="#123d75", weight="bold")
+        ax.text(xy[i, 0], xy[i, 1] + 0.13, CH[i], ha="center", fontsize=fs, color="#123d75", weight="bold")
     ax.set_aspect("equal"); ax.axis("off"); ax.set_xlim(-1.4, 1.4); ax.set_ylim(-1.35, 1.35)
-    ax.set_title("(a) EEG: 64-ch 10–10 montage\n(EEGBCI); C3, C4 used", fontsize=6.6)
+    ax.set_title("(a) EEG, 64 ch;\nC3, C4 used" if short else "(a) EEG: 64-ch 10–10 montage\n(EEGBCI); C3, C4 used", fontsize=fs)
 
 
-def eit_panels(ax_b, ax_c, seed=5):
+def eit_panels(ax_b, ax_c, seed=5, fs=6.6, short=False):
     import pyeit.eit.protocol as protocol
     from pyeit.eit.fem import EITForward
     from ns_gate.eit_glrt import _meshes, _centroids
@@ -62,20 +62,26 @@ def eit_panels(ax_b, ax_c, seed=5):
     ax_b.tripcolor(fine.node[:, 0], fine.node[:, 1], fine.element, facecolors=perm, cmap="Blues_r",
                    vmin=0.3, vmax=1.0, edgecolors="#d0d0d0", linewidth=0.15)
     ax_b.scatter(el_f[:, 0], el_f[:, 1], s=10, color="#00a888", zorder=3)
-    ax_b.set_title("(b) EIT: simulated anomaly\n(fine mesh, 16 electrodes)", fontsize=6.6)
+    ax_b.set_title("(b) EIT anomaly,\nfine mesh" if short else "(b) EIT: simulated anomaly\n(fine mesh, 16 electrodes)", fontsize=fs)
     ax_c.tripcolor(coarse.node[:, 0], coarse.node[:, 1], coarse.element, facecolors=T / T.max(), cmap="Blues",
                    edgecolors="#d0d0d0", linewidth=0.2)
     k = int(np.argmax(T))
     ax_c.scatter(*cc[k], marker="x", s=25, color="#e76624", zorder=4)
     ax_c.add_patch(plt.Circle(centre, rad, fill=False, ls="--", lw=0.8, color="#444"))
     ax_c.scatter(el_f[:, 0], el_f[:, 1], s=10, color="#00a888", zorder=3)
-    ax_c.set_title("(c) GLRT map T$_k$ at 0 dB\n(coarse mesh; × = max)", fontsize=6.6)
+    ax_c.set_title("(c) GLRT map\nat 0 dB" if short else "(c) GLRT map T$_k$ at 0 dB\n(coarse mesh; × = max)", fontsize=fs)
     for a in (ax_b, ax_c):
         a.set_aspect("equal"); a.axis("off")
 
 
 def draw(out=Path("outputs"), blind=False):
-    fig = plt.figure(figsize=(7.16 if not blind else 5.4, 2.15))
+    if blind:  # the version used in the paper: drawn at its printed width (one column), 8 pt text
+        fig = plt.figure(figsize=(3.35, 1.55))
+        gs = fig.add_gridspec(1, 3, wspace=0.06)
+        eeg_panel(fig.add_subplot(gs[0]), fs=8, short=True)
+        eit_panels(fig.add_subplot(gs[1]), fig.add_subplot(gs[2]), fs=8, short=True)
+        fig.savefig(out / "figure_2_acquisition_blind.png", dpi=300, bbox_inches="tight", pad_inches=0.02); return
+    fig = plt.figure(figsize=(7.16, 2.15))
     gs = fig.add_gridspec(1, 3 if blind else 4, width_ratios=[1, 1, 1] if blind else [1, 1, 1, 1.45], wspace=0.08)
     eeg_panel(fig.add_subplot(gs[0]))
     eit_panels(fig.add_subplot(gs[1]), fig.add_subplot(gs[2]))

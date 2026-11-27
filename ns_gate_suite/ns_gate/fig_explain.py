@@ -159,7 +159,8 @@ def eit_steps(snr_db=0.0, seed=5):
 
 
 # --------------------------------------------------------- mispairing figure
-def mispairing(r=0.5, n=200, seed=31, alpha=0.05):
+def mispairing(r=0.5, n=200, seed=31, alpha=0.05, layout="wide"):
+    """layout="wide": 1x4 strip (two-column figure); "column": 2x2 grid for one IEEE column."""
     rng = np.random.default_rng(seed)
     pool = generate(20000, r, rng)
     ref = build_reference(pool["x_eeg"], pool["x_eit"], n, "cca", 1000, rng)
@@ -175,49 +176,65 @@ def mispairing(r=0.5, n=200, seed=31, alpha=0.05):
     null = np.array([cca_pillai(*(lambda g: (g["x_eeg"], mispair(g["x_eit"], 1.0, rng)[0]))(generate(n, r, rng)))
                      for _ in range(1000)])
 
-    fig = plt.figure(figsize=(7.16, 2.35))
-    gs = fig.add_gridspec(1, 4, width_ratios=[1.05, 1, 1, 1.25], wspace=0.5)
+    col = layout == "column"
+    k = 1.2 if col else 1.0  # font scale: printed at full column width
+    if col:
+        fig = plt.figure(figsize=(3.45, 3.9))
+        gs = fig.add_gridspec(2, 2, wspace=0.55, hspace=0.95)
+        G = [gs[0, 0], gs[0, 1], gs[1, 0], gs[1, 1]]
+    else:
+        fig = plt.figure(figsize=(7.16, 2.35))
+        gs = fig.add_gridspec(1, 4, width_ratios=[1.05, 1, 1, 1.25], wspace=0.5)
+        G = [gs[0], gs[1], gs[2], gs[3]]
     # (a) schematic
-    ax = fig.add_subplot(gs[0]); ax.axis("off"); ax.set_xlim(-0.04, 1.04); ax.set_ylim(0, 1)
+    ax = fig.add_subplot(G[0]); ax.axis("off"); ax.set_xlim(-0.04, 1.04); ax.set_ylim(0, 1)
     rows = 7; ys = np.linspace(0.82, 0.12, rows)
     swap = {1: 4, 4: 1, 5: 6, 6: 5}
     for i, y in enumerate(ys):
         ax.add_patch(FancyBboxPatch((0.0, y - 0.04), 0.36, 0.08, boxstyle="round,pad=0.005", fc="#e8f1fc", ec=BLUE, lw=0.7))
-        ax.text(0.18, y, f"ID {101 + i} EEG", ha="center", va="center", fontsize=5.6)
+        ax.text(0.18, y, (f"EEG {101 + i}" if col else f"ID {101 + i} EEG"), ha="center", va="center", fontsize=5.6*k)
         ax.add_patch(FancyBboxPatch((0.64, y - 0.04), 0.36, 0.08, boxstyle="round,pad=0.005", fc="#e6f6f1", ec=AQUA, lw=0.7))
-        ax.text(0.82, y, f"ID {101 + i} EIT", ha="center", va="center", fontsize=5.6)
+        ax.text(0.82, y, (f"EIT {101 + i}" if col else f"ID {101 + i} EIT"), ha="center", va="center", fontsize=5.6*k)
         j = swap.get(i, i)
         ax.annotate("", xy=(0.64, ys[j]), xytext=(0.36, y),
                     arrowprops=dict(arrowstyle="-", color=RED if j != i else GREEN, lw=1.0 if j != i else 0.8))
-    ax.text(0.5, 1.02, "(a) IDs match,\npayloads swapped", ha="center", fontsize=6.8)
-    ax.text(0.5, 0.0, "green: correct pair   red: wrong partner", ha="center", fontsize=5.6, color="#444")
+    ax.text(0.5, 1.02, "(a) IDs match,\npayloads swapped", ha="center", fontsize=6.8*k)
+    ax.text(0.5, -0.04 if col else 0.0, ("green: correct pair\nred: wrong partner" if col else "green: correct pair   red: wrong partner"),
+            ha="center", va="top" if col else "baseline", fontsize=5.6*k, color="#444")
 
     def scat(axx, xi, title, stat, col):
         u, v = cca.transform(d["x_eeg"], xi)
         cc_ = np.corrcoef(u[:, 0], v[:, 0])[0, 1]
         axx.scatter(u[:, 0], v[:, 0], s=4, color=col, alpha=0.6, lw=0)
-        axx.set_xlabel("EEG canonical score", fontsize=6); axx.set_ylabel("EIT canonical score", fontsize=6)
-        axx.tick_params(labelsize=5.5)
+        axx.set_xlabel("EEG canonical score", fontsize=6*k); axx.set_ylabel("EIT canonical score", fontsize=6*k)
+        axx.tick_params(labelsize=5.5 * k)
         for s_ in ("top", "right"):
             axx.spines[s_].set_visible(False)
         dec = "PASS" if stat >= thr else "BLOCK"
-        axx.set_title(f"{title}\ncorr = {cc_:.2f}, Pillai = {stat:.3f}\ngate: {dec}", fontsize=6.4)
+        axx.set_title(f"{title}\ncorr = {cc_:.2f}, Pillai = {stat:.3f}\ngate: {dec}", fontsize=6.4*k)
         return cc_
 
-    c1 = scat(fig.add_subplot(gs[1]), d["x_eit"], "(b) Correct pairing", stats["clean"], BLUE)
-    c2 = scat(fig.add_subplot(gs[2]), xi_full, "(c) All records mispaired", stats["full"], RED)
-    ax = fig.add_subplot(gs[3])
+    c1 = scat(fig.add_subplot(G[1]), d["x_eit"], "(b) Correct pairing", stats["clean"], BLUE)
+    c2 = scat(fig.add_subplot(G[2]), xi_full, "(c) All records mispaired", stats["full"], RED)
+    ax = fig.add_subplot(G[3])
     bins = np.linspace(min(null.min(), ref.values.min()), max(null.max(), ref.values.max()), 45)
-    ax.hist(ref.values, bins=bins, color=BLUE, alpha=0.65, label="clean batches")
-    ax.hist(null, bins=bins, color=RED, alpha=0.55, label="fully mispaired")
+    ax.hist(ref.values, bins=bins, color=BLUE, alpha=0.65, label=("clean" if col else "clean batches"))
+    ax.hist(null, bins=bins, color=RED, alpha=0.55, label=("mispaired" if col else "fully mispaired"))
     ax.axvline(thr, color="#222", ls="--", lw=0.9)
-    ax.text(thr, ax.get_ylim()[1] * 0.62, " threshold:\n block below", fontsize=5.6, va="top")
-    ax.set_xlabel("Pillai trace of a 200-record batch", fontsize=6); ax.set_ylabel("batches", fontsize=6)
-    ax.tick_params(labelsize=5.5); ax.legend(frameon=False, fontsize=5.6, loc="upper left", bbox_to_anchor=(-0.02, 1.0))
+    if col:
+        ax.set_ylim(0, ax.get_ylim()[1] * 1.55)
+    ax.text(thr, ax.get_ylim()[1] * (0.97 if col else 0.62), " threshold:\n block below", fontsize=5.6*k, va="top")
+    ax.set_xlabel("Pillai trace of a 200-record batch", fontsize=6*k); ax.set_ylabel("batches", fontsize=6*k)
+    ax.tick_params(labelsize=5.5 * k)
+    if col:  # direct labels instead of a legend in the narrow layout
+        ax.text(np.median(ref.values), ax.get_ylim()[1] * 0.60, "clean", color=BLUE, ha="center", fontsize=6.2 * k)
+        ax.text(thr - 0.006, ax.get_ylim()[1] * 0.68, "mispaired", color=RED, ha="right", fontsize=5.4 * k)
+    else:
+        ax.legend(frameon=False, fontsize=5.6*k, loc=("upper right" if col else "upper left"), bbox_to_anchor=((1.04, 0.74) if col else (-0.02, 1.0)), handlelength=1.0)
     for s_ in ("top", "right"):
         ax.spines[s_].set_visible(False)
-    ax.set_title("(d) The gate's decision rule\n(1,000 batches each)\n", fontsize=6.4)
-    fig.savefig(OUT / "figure_mispairing.png", dpi=300, bbox_inches="tight")
+    ax.set_title("(d) The gate's decision rule\n(1,000 batches each)\n", fontsize=6.4*k)
+    fig.savefig(OUT / ("figure_mispairing_col.png" if col else "figure_mispairing.png"), dpi=300, bbox_inches="tight")
     plt.close(fig)
     stats.update({"corr_clean": float(c1), "corr_full": float(c2),
                   "null_below_thr": float(np.mean(null < thr)), "ref_below_thr": float(np.mean(ref.values < thr))})
