@@ -1,0 +1,87 @@
+{
+  "status": "RUN",
+  "dev_participants": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010"
+  ],
+  "heldout_participants": [
+    "S011",
+    "S012",
+    "S013",
+    "S014",
+    "S015",
+    "S016",
+    "S017",
+    "S018",
+    "S019",
+    "S020",
+    "S021",
+    "S022",
+    "S023",
+    "S024",
+    "S025",
+    "S026",
+    "S027",
+    "S028",
+    "S029",
+    "S030"
+  ],
+  "run": "R04",
+  "dev_windows": 150,
+  "heldout_windows": 300,
+  "summary": [
+    {
+      "Model": "C3/C4 mu-beta LR (frozen)",
+      "participants": 20,
+      "windows": 300,
+      "mean_subject_accuracy": 0.5366666666666666,
+      "mean_subject_balanced_accuracy": 0.5415178571428572,
+      "ci95_low": 0.48999999999999994,
+      "ci95_high": 0.5833333333333333,
+      "sd": 0.11129225000996565,
+      "n_above_0.5": 13,
+      "wilcoxon_p_vs_0.5": 0.07787329162674168
+    },
+    {
+      "Model": "CSP+LDA",
+      "participants": 20,
+      "windows": 300,
+      "mean_subject_accuracy": 0.5,
+      "mean_subject_balanced_accuracy": 0.5107142857142858,
+      "ci95_low": 0.4533333333333333,
+      "ci95_high": 0.5499999999999999,
+      "sd": 0.11134478352717495,
+      "n_above_0.5": 8,
+      "wilcoxon_p_vs_0.5": 0.6121894213111778
+    },
+    {
+      "Model": "Majority (dev)",
+      "participants": 20,
+      "windows": 300,
+      "mean_subject_accuracy": 0.5,
+      "mean_subject_balanced_accuracy": 0.5,
+      "ci95_low": 0.48666666666666664,
+      "ci95_high": 0.5133333333333333,
+      "sd": 0.034199278402838464,
+      "n_above_0.5": 10,
+      "wilcoxon_p_vs_0.5": 0.5
+    }
+  ],
+  "paired_frozen_vs_csp": {
+    "frozen_minus_csp_mean": 0.03666666666666666,
+    "ci95": [
+      -0.02666666666666666,
+      0.1033333333333333
+    ]
+  },
+  "runtime_s": 15.62900349998381,
+  "peak_mb": 257.79080295562744
+}

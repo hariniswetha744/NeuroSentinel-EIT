@@ -1,0 +1,43 @@
+{
+  "project": "NeuroSentinel",
+  "purpose": "Longitudinal recurrence data readiness audit",
+  "input_file": "fusion/longitudinal_clinical_data.csv",
+  "input_exists": false,
+  "records": 0,
+  "required_columns": [
+    "Subject_ID",
+    "Session_ID",
+    "Observation_Date",
+    "EEG_Record_ID",
+    "EIT_Record_ID",
+    "Verified_Tumour_Status",
+    "Verified_Recurrence_Status",
+    "Outcome_Verification_Source"
+  ],
+  "missing_columns": [
+    "Subject_ID",
+    "Session_ID",
+    "Observation_Date",
+    "EEG_Record_ID",
+    "EIT_Record_ID",
+    "Verified_Tumour_Status",
+    "Verified_Recurrence_Status",
+    "Outcome_Verification_Source"
+  ],
+  "missing_values": null,
+  "invalid_dates": null,
+  "duplicate_subject_session_pairs": null,
+  "subjects_with_multiple_sessions": null,
+  "verified_outcomes_available": false,
+  "paired_eeg_eit_records_available": false,
+  "recurrence_model_evaluation_ready": false,
+  "status": "DATASET_NOT_PROVIDED",
+  "warnings": [
+    "No longitudinal clinical dataset was supplied.",
+    "Never invent subject IDs, session IDs or clinical outcomes.",
+    "EEG motor-imagery labels are not tumour labels.",
+    "The current EIT summary represents a simulation.",
+    "Recurrence evaluation requires verified longitudinal clinical outcomes.",
+    "A structural audit is not clinical validation."
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "n": 200,
+    "fdr": 0.1,
+    "seed": 11,
+    "calib_records": 200000,
+    "score": "learned match probability (32 cross-products)",
+    "runtime_s": 8.9
+  },
+  "rows": [
+    {
+      "r": 0.5,
+      "q": 0.0,
+      "batches": 2000,
+      "record_auc": NaN,
+      "recall": NaN,
+      "precision_when_flagged": NaN,
+      "batches_with_flags": 0.103,
+      "mean_flagged": 0.1285,
+      "mean_fdp_or_clean_any_flag": 0.103
+    },
+    {
+      "r": 0.5,
+      "q": 0.1,
+      "batches": 300,
+      "record_auc": 0.595899074074074,
+      "recall": 0.009833333333333335,
+      "precision_when_flagged": 0.5578703703703703,
+      "batches_with_flags": 0.24,
+      "mean_flagged": 0.36,
+      "mean_fdp_or_clean_any_flag": 0.1061111111111111
+    },
+    {
+      "r": 0.5,
+      "q": 0.25,
+      "batches": 300,
+      "record_auc": 0.593736888888889,
+      "recall": 0.012333333333333333,
+      "precision_when_flagged": 0.8264034068912118,
+      "batches_with_flags": 0.41,
+      "mean_flagged": 0.7566666666666667,
+      "mean_fdp_or_clean_any_flag": 0.07117460317460317
+    },
+    {
+      "r": 0.5,
+      "q": 0.5,
+      "batches": 300,
+      "record_auc": 0.600125,
+      "recall": 0.015533333333333333,
+      "precision_when_flagged": 0.9191531577169875,
+      "batches_with_flags": 0.6266666666666667,
+      "mean_flagged": 1.7133333333333334,
+      "mean_fdp_or_clean_any_flag": 0.050664021164021154
+    },
+    {
+      "r": 0.8,
+      "q": 0.0,
+      "batches": 2000,
+      "record_auc": NaN,
+      "recall": NaN,
+      "precision_when_flagged": NaN,
+      "batches_with_flags": 0.0905,
+      "mean_flagged": 0.1165,
+      "mean_fdp_or_clean_any_flag": 0.0905
+    },
+    {
+      "r": 0.8,
+      "q": 0.1,
+      "batches": 300,
+      "record_auc": 0.6591851851851852,
+      "recall": 0.03983333333333333,
+      "precision_when_flagged": 0.8306031746031747,
+      "batches_with_flags": 0.5,
+      "mean_flagged": 0.9833333333333333,
+      "mean_fdp_or_clean_any_flag": 0.08469841269841268
+    },
+    {
+      "r": 0.8,
+      "q": 0.25,
+      "batches": 300,
+      "record_auc": 0.6637995555555555,
+      "recall": 0.05853333333333334,
+      "precision_when_flagged": 0.9197322122322122,
+      "batches_with_flags": 0.8666666666666667,
+      "mean_flagged": 3.2533333333333334,
+      "mean_fdp_or_clean_any_flag": 0.06956541606541605
+    },
+    {
+      "r": 0.8,
+      "q": 0.5,
+      "batches": 300,
+      "record_auc": 0.6653593333333333,
+      "recall": 0.08950000000000001,
+      "precision_when_flagged": 0.9592721219849704,
+      "batches_with_flags": 0.9866666666666667,
+      "mean_flagged": 9.446666666666667,
+      "mean_fdp_or_clean_any_flag": 0.04018483964149599
+    },
+    {
+      "r": 0.95,
+      "q": 0.0,
+      "batches": 2000,
+      "record_auc": NaN,
+      "recall": NaN,
+      "precision_when_flagged": NaN,
+      "batches_with_flags": 0.083,
+      "mean_flagged": 0.101,
+      "mean_fdp_or_clean_any_flag": 0.083
+    },
+    {
+      "r": 0.95,
+      "q": 0.1,
+      "batches": 300,
+      "record_auc": 0.6880379629629629,
+      "recall": 0.11383333333333336,
+      "precision_when_flagged": 0.8960973231100351,
+      "batches_with_flags": 0.7866666666666666,
+      "mean_flagged": 2.6233333333333335,
+      "mean_fdp_or_clean_any_flag": 0.08173677248677248
+    },
+    {
+      "r": 0.95,
+      "q": 0.25,
+      "batches": 300,
+      "record_auc": 0.6942888888888888,
+      "recall": 0.13513333333333336,
+      "precision_when_flagged": 0.9263978197181741,
+      "batches_with_flags": 0.98,
+      "mean_flagged": 7.386666666666667,
+      "mean_fdp_or_clean_any_flag": 0.07213013667618931
+    },
+    {
+      "r": 0.95,
+      "q": 0.5,
+      "batches": 300,
+      "record_auc": 0.6953953333333334,
+      "recall": 0.18003333333333335,
+      "precision_when_flagged": 0.9518584722349684,
+      "batches_with_flags": 1.0,
+      "mean_flagged": 19.013333333333332,
+      "mean_fdp_or_clean_any_flag": 0.048141527765031576
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+Model,Actual_Task,Predicted_Task,Count
+Majority-class baseline,T1,T1,77
+Majority-class baseline,T1,T2,0
+Majority-class baseline,T2,T1,73
+Majority-class baseline,T2,T2,0
+Logistic Regression (log features),T1,T1,27
+Logistic Regression (log features),T1,T2,50
+Logistic Regression (log features),T2,T1,28
+Logistic Regression (log features),T2,T2,45

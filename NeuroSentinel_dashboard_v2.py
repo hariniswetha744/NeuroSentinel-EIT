@@ -53,13 +53,263 @@ def show_table(filename):
             key=f"download_{filename}"
         )
 
-overview, eeg, eit, files, fusion, window_comparison = st.tabs([
-    "Overview", "EEG Analysis", "EIT Validation",
+overview, paper, extra, eeg, eit, files, fusion, window_comparison = st.tabs([
+    "Overview", "Paper Results (IEEE v10)", "Extensions & Real-Data Check", "EEG Analysis", "EIT Validation",
     "Data Tables", "Fusion Readiness", "EEG Window Comparison"
 ])
 
+PAPER = ROOT / "paper_results"
+PAPER_FIG = PAPER / "figures"
+
+
+def paper_csv(name):
+    path = PAPER / name
+    return pd.read_csv(path) if path.exists() else None
+
+
+def paper_json(name):
+    import json
+    path = PAPER / name
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+def paper_figure(name, caption):
+    path = PAPER_FIG / name
+    if path.exists():
+        st.image(str(path), caption=caption, width="stretch")
+    else:
+        st.warning(f"Figure not found: {path}")
+
+
+with paper:
+    st.header("Silent Mispairing in EEG–EIT Fusion: Paper Results")
+    st.info(
+        "Results behind the IEEE manuscript (v10). Pairing experiments use a synthetic "
+        "generator, the EIT detector uses simulated pyEIT frames, and the EEG test uses "
+        "public PhysioNet data. Software-only; no clinical claim. Every number below is "
+        "read from the files in paper_results/, produced by ns_gate_suite/run_all.py."
+    )
+    fig_a = paper_csv("figure_A_corruption.csv")
+    gate = paper_csv("tables_I_II_gate.csv")
+    eeg_ho = paper_json("table3_eeg_heldout.json")
+    if fig_a is None or gate is None:
+        st.error("paper_results/ is missing. Run ns_gate_suite/run_all.py and copy its outputs.")
+    else:
+        q0 = fig_a.loc[fig_a.q == 0.0].iloc[0]
+        q1 = fig_a.loc[fig_a.q == 1.0].iloc[0]
+        f7 = gate[gate.fault.str.startswith("F7")].set_index("severity")
+        clean = gate[gate.set == "clean"].iloc[0]
+        m = st.columns(4)
+        m[0].metric("Fusion accuracy, q = 0 → 1", f"{q0.acc_ungated_fusion:.3f} → {q1.acc_ungated_fusion:.3f}")
+        m[1].metric("Metadata checks: mispaired batches blocked", f"{100 * f7.loc[1.0, 'Metadata (P1-P8)']:.1f}%")
+        m[2].metric("Pairing gate (calib-CCA) at q = 1", f"{100 * f7.loc[1.0, 'Full: +P9 calib-CCA']:.1f}%")
+        m[3].metric("Clean batches wrongly blocked", f"{100 * clean['Full: +P9 calib-CCA']:.1f}%")
+
+        st.subheader("1. What mispairing is")
+        c1, c2 = st.columns([1.2, 1])
+        with c1:
+            paper_figure("figure_mispairing.png", "Fig. 3: IDs match but payloads are swapped; the gate sees the lost cross-modal link")
+        with c2:
+            paper_figure("figure_1_gate.png", "Fig. 1: pre-fusion validity gate (P1–P8 metadata, P9 pairing dependence)")
+        paper_figure("figure_concept.png", "Measurement concept and what the study did (conceptual drawing)")
+
+        st.subheader("2. Fusion fails silently (Fig. 4)")
+        c1, c2 = st.columns([1, 1.3])
+        with c1:
+            paper_figure("figure_A_corruption_print.png", "Accuracy and block rate vs mispaired fraction q")
+        with c2:
+            cols = {"q": "q", "acc_ungated_fusion": "Fusion, no gate", "acc_gated_calib_cca": "With gate",
+                    "acc_eeg_only": "EEG only", "acc_mispaired_records": "Mispaired records",
+                    "block_rate_calib_cca": "Blocked (calib-CCA)"}
+            st.dataframe(fig_a[[c for c in cols if c in fig_a]].rename(columns=cols).round(3),
+                         hide_index=True, width="stretch")
+
+        st.subheader("3. Gate versus baselines (Tables I–II)")
+        variants = ["ID-only (P1-P4)", "Metadata (P1-P8)", "Full: +P9 calib-CCA", "Full: +P9 perm-CCA",
+                    "Full: +P9 calib-HSIC"]
+        shown = gate[["set", "fault", "severity", "ungated_fusion_acc"] + variants].copy()
+        for v in variants:
+            shown[v] = (100 * shown[v]).round(1)
+        learned = paper_csv("learned_baseline.csv")
+        if learned is not None:
+            key = learned.set_index(["fault", "severity"])["learned_block"]
+            shown["Learned matched-pair (%)"] = [
+                round(100 * key[(f, s)], 1) if (f, s) in key.index else None
+                for f, s in zip(shown.fault, shown.severity)]
+        st.caption("Block rate (%) per fault; N = 200 records per batch. The learned baseline is a separate seeded run.")
+        shown["ungated_fusion_acc"] = shown["ungated_fusion_acc"].round(3)
+        st.dataframe(shown.rename(columns={"ungated_fusion_acc": "Fusion acc. (no gate)"}),
+                     hide_index=True, width="stretch")
+
+        st.subheader("4. Detection power (Fig. 5)")
+        paper_figure("figure_B_power_print.png", "Power vs q by batch size, redundancy and statistic")
+        st.caption("At redundancy r = 0 the two modalities share no information, so no dependence test can detect mispairing.")
+
+        st.subheader("5. EIT detector: GLRT vs peak (Fig. 6)")
+        c1, c2 = st.columns([1, 1.4])
+        with c1:
+            paper_figure("figure_C_eit_glrt_print.png", "ROC and detection at a 5% false-alarm threshold")
+        with c2:
+            eit_tab = paper_csv("figure_C_eit_glrt.csv")
+            if eit_tab is not None:
+                keep = ["snr_db", "glrt_auc", "peak_auc", "glrt_detection", "peak_detection",
+                        "glrt_far_marginal_mean", "peak_far_marginal_mean"]
+                st.dataframe(eit_tab[keep].round(3), hide_index=True, width="stretch")
+        paper_figure("figure_eit_steps.png", "EIT step by step: true change → electrode data → image → detection map (simulation)")
+
+        st.subheader("6. EEG on unseen participants (Table III)")
+        if eeg_ho is None:
+            st.info("table3_eeg_heldout.json not found.")
+        else:
+            summ = pd.DataFrame(eeg_ho["summary"])
+            st.dataframe(summ[["Model", "participants", "mean_subject_accuracy", "ci95_low", "ci95_high",
+                               "wilcoxon_p_vs_0.5"]].round(3), hide_index=True, width="stretch")
+            frozen = summ.iloc[0]
+            confirmed = frozen.ci95_low > 0.5
+            pc = eeg_ho["paired_frozen_vs_csp"]
+            st.markdown(
+                f"Held-out participants: {eeg_ho['heldout_participants'][0]}–{eeg_ho['heldout_participants'][-1]} "
+                f"({len(eeg_ho['heldout_participants'])}). The 95% CI {'excludes' if confirmed else 'includes'} 0.5, "
+                f"so the development accuracy of 0.573 was {'confirmed' if confirmed else 'not confirmed'}. "
+                f"Frozen minus CSP+LDA: {pc['frozen_minus_csp_mean']:.3f} "
+                f"(95% CI {pc['ci95'][0]:.3f} to {pc['ci95'][1]:.3f})."
+            )
+            paper_figure("figure_2_acquisition.png", "Fig. 2: EEG electrode layout, simulated EIT anomaly, GLRT map, dashboard")
+
+        st.subheader("7. Cost (Table IV)")
+        ov = paper_csv("table_IV_overhead.csv")
+        if ov is not None:
+            st.dataframe(ov.round(3), hide_index=True, width="stretch")
+
+        md = PAPER / "results_for_paper.md"
+        if md.exists():
+            st.download_button("Download all paper tables (Markdown)", md.read_bytes(),
+                               file_name="results_for_paper.md", mime="text/markdown")
+
+
+EXT = PAPER / "extensions"
+
+
+def ext_json(name):
+    import json
+    path = EXT / name
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+with extra:
+    st.header("Extensions after v10: addressing the stated limitations")
+    st.info(
+        "Four follow-up experiments. E1–E3 use the same synthetic generator as the paper "
+        "(N = 200 records per batch, r = 0.5); Experiment 7 uses real, simultaneously recorded "
+        "EEG + NIRS. Every number is read from files in paper_results/extensions/ and "
+        "paper_results/exp7_eeg_nirs.json. These results are not yet in the manuscript."
+    )
+
+    st.subheader("E2. Accumulating evidence over successive batches")
+    e2 = ext_json("e2_sequential.json")
+    if e2 is None:
+        st.info("e2_sequential.json not found. Run ns_gate_suite/run_extensions.py.")
+    else:
+        d = pd.DataFrame(e2["rows"])
+        piv = d.pivot(index="records_seen", columns="q", values="block_rate")
+        piv.columns = [("clean (false block)" if q == 0 else f"{int(round(100 * q))}% mispaired") for q in piv.columns]
+        st.line_chart(100 * piv, x_label="Records seen (batches of 200)", y_label="Batches blocked (%)")
+        last = d[d.k_batches == d.k_batches.max()].set_index("q")
+        m = st.columns(3)
+        m[0].metric(f"20% mispaired, after {int(last.loc[0.2, 'records_seen'])} records",
+                    f"{100 * last.loc[0.2, 'block_rate']:.1f}%")
+        m[1].metric("10% mispaired, same", f"{100 * last.loc[0.1, 'block_rate']:.1f}%")
+        m[2].metric("Clean data wrongly blocked", f"{100 * last.loc[0.0, 'block_rate']:.1f}%")
+        st.caption("Fisher combination of the conformal CCA p-values of k batches, with k fixed in advance. "
+                   "Repeatedly testing after every batch would raise the false-alarm rate.")
+
+    st.subheader("E3. One rule combining CCA and the learned scorer")
+    e3 = ext_json("e3_combined.json")
+    if e3 is None:
+        st.info("e3_combined.json not found.")
+    else:
+        d = pd.DataFrame(e3["rows"])
+        for c in ("cca", "learned", "combined"):
+            d[c] = (100 * d[c]).round(1)
+        st.dataframe(d.rename(columns={"case": "Fault", "severity": "Severity", "trials": "Batches",
+                                       "cca": "CCA (%)", "learned": "Learned (%)", "combined": "Combined (%)"}),
+                     hide_index=True, width="stretch")
+        st.caption("Block if min(p_CCA, p_learned) ≤ α/2. The combined rule removes CCA's stale-buffer and "
+                   "electrode blind spots and the learned scorer's within-subject blind spot. "
+                   "Class-conditional swaps stay undetected by every rule.")
+
+    st.subheader("E1. Which records are mispaired?")
+    e1 = ext_json("e1_record_flagging.json")
+    if e1 is None:
+        st.info("e1_record_flagging.json not found.")
+    else:
+        d = pd.DataFrame(e1["rows"])
+        d = d[d.q > 0][["r", "q", "record_auc", "recall", "precision_when_flagged", "batches_with_flags"]]
+        st.dataframe((d.assign(recall=100 * d.recall, precision_when_flagged=100 * d.precision_when_flagged,
+                               batches_with_flags=100 * d.batches_with_flags).round(3)
+                      .rename(columns={"r": "Redundancy r", "q": "Mispaired fraction", "record_auc": "Record AUC",
+                                       "recall": "Mispaired records found (%)",
+                                       "precision_when_flagged": "Flags that are correct (%)",
+                                       "batches_with_flags": "Batches with any flag (%)"})),
+                     hide_index=True, width="stretch")
+        st.caption(f"Per-record conformal p-values with Benjamini–Hochberg at FDR {e1['meta']['fdr']}. "
+                   "Flags are mostly correct, but most mispaired records are not found: a single record "
+                   "carries too little information. The gate decides per batch.")
+
+    st.subheader("Experiment 7. Real simultaneous EEG + NIRS (29 subjects)")
+    e7 = paper_json("exp7_eeg_nirs.json")
+    if e7 is None:
+        st.warning("exp7_eeg_nirs.json not found. Run ns_gate_suite/run_eeg_nirs.py (see RUN_EXP7.md) "
+                   "and copy outputs/exp7_eeg_nirs.json into paper_results/.")
+    else:
+        run = e7["runs"]["subject"]
+        st.markdown(
+            f"**Data:** {e7['dataset']}. {run['n_trials']} trials from {run['n_subjects']} subjects; "
+            f"reference half {len(run['reference_subjects'])} subjects, test half {len(run['test_subjects'])} subjects "
+            f"(all rates below are on the test half)."
+        )
+        m = st.columns(2)
+        m[0].metric("EEG–NIRS dependence on correct pairs (Pillai trace, test half)", f"{run['test_half_pillai']:.4f}")
+        m[1].metric("Permutation p-value for that dependence", f"{run['test_half_perm_p']:.3f}")
+        for std, label in (("subject", "features standardized within subject"), ("none", "raw features")):
+            r = pd.DataFrame(e7["runs"][std]["rows"])
+            for c in ("cca_calib", "cca_perm", "learned_calib", "combined"):
+                r[c] = (100 * r[c]).round(1)
+            st.markdown(f"**Block rate (%), {label}**")
+            st.dataframe(r[["n", "fault", "q", "cca_calib", "cca_perm", "learned_calib", "combined"]]
+                         .rename(columns={"n": "N", "fault": "Fault", "q": "q", "cca_calib": "CCA calib.",
+                                          "cca_perm": "CCA perm.", "learned_calib": "Learned calib.",
+                                          "combined": "Combined"}),
+                         hide_index=True, width="stretch")
+        st.error(
+            "Finding: on real EEG–NIRS motor-imagery trial features the cross-modal dependence is very weak, "
+            "so the dependence predicate has little power (compare the q = 0 and q = 1 rows), and the learned "
+            "scorer's calibration does not transfer to unseen subjects (its clean false-block rate is far above 5%). "
+            "This is the r ≈ 0 regime the paper describes: the gate is only usable after the dependence has been "
+            "measured on a trusted paired subset from the same population."
+        )
+
 with overview:
     st.header("Project Overview")
+    st.info(
+        "The 'Paper Results' tab holds the results reported in the IEEE manuscript (v10); the "
+        "'Extensions & Real-Data Check' tab holds the follow-up experiments. "
+        "The other tabs show earlier archived project results (EIDORS EIT, initial "
+        "fusion benchmark), which the manuscript does not use."
+    )
+
+    st.subheader("Project status")
+    st.markdown(
+        "**Done**\n"
+        "- IEEE manuscript v10 (regular and double-blind), 6 pages, IEEE A4 conference template; "
+        "28 references, all after 2010 except the two PhysioNet dataset citations, numbered in order of first citation.\n"
+        "- Pairing-validity gate (P1–P9), learned matched-pair baseline, EIT GLRT detector, held-out EEG test (Table III).\n"
+        "- Extensions: sequential testing (E2), combined CCA + learned rule (E3), record-level flagging (E1).\n"
+        "- Experiment 7: gate run on real simultaneous EEG + NIRS from 29 subjects.\n\n"
+        "**Open**\n"
+        "- Decide with the guide how Experiment 7 and E1–E3 enter the paper.\n"
+        "- IEEE requires an AI-use statement in the Acknowledgment; v10 has none (removed on request)."
+    )
 
     c1, c2 = st.columns(2)
 

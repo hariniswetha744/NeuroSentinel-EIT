@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "n": 200,
+    "r": 0.5,
+    "seed": 12,
+    "reference_batches": 2000,
+    "combination": "Fisher, chi2 with 2k d.f.",
+    "runtime_s": 11.3
+  },
+  "rows": [
+    {
+      "q": 0.0,
+      "k_batches": 1,
+      "records_seen": 200,
+      "block_rate": 0.046,
+      "lo": 0.030844883399787512,
+      "hi": 0.06807827022627275,
+      "streams": 500
+    },
+    {
+      "q": 0.0,
+      "k_batches": 2,
+      "records_seen": 400,
+      "block_rate": 0.052,
+      "lo": 0.03573001990962654,
+      "hi": 0.07510163829406287,
+      "streams": 500
+    },
+    {
+      "q": 0.0,
+      "k_batches": 5,
+      "records_seen": 1000,
+      "block_rate": 0.05,
+      "lo": 0.03409350665098192,
+      "hi": 0.07276865002683111,
+      "streams": 500
+    },
+    {
+      "q": 0.0,
+      "k_batches": 10,
+      "records_seen": 2000,
+      "block_rate": 0.054,
+      "lo": 0.03737409848513375,
+      "hi": 0.07742706124443205,
+      "streams": 500
+    },
+    {
+      "q": 0.0,
+      "k_batches": 20,
+      "records_seen": 4000,
+      "block_rate": 0.042,
+      "lo": 0.027632099334746148,
+      "hi": 0.06335205123956134,
+      "streams": 500
+    },
+    {
+      "q": 0.05,
+      "k_batches": 1,
+      "records_seen": 200,
+      "block_rate": 0.086,
+      "lo": 0.06447280005130328,
+      "hi": 0.11384038409228468,
+      "streams": 500
+    },
+    {
+      "q": 0.05,
+      "k_batches": 2,
+      "records_seen": 400,
+      "block_rate": 0.122,
+      "lo": 0.0961588543796491,
+      "hi": 0.15360535722971383,
+      "streams": 500
+    },
+    {
+      "q": 0.05,
+      "k_batches": 5,
+      "records_seen": 1000,
+      "block_rate": 0.128,
+      "lo": 0.10152638796079462,
+      "hi": 0.1601463282261975,
+      "streams": 500
+    },
+    {
+      "q": 0.05,
+      "k_batches": 10,
+      "records_seen": 2000,
+      "block_rate": 0.168,
+      "lo": 0.13778772464256234,
+      "hi": 0.20327502206195752,
+      "streams": 500
+    },
+    {
+      "q": 0.05,
+      "k_batches": 20,
+      "records_seen": 4000,
+      "block_rate": 0.268,
+      "lo": 0.23105333049086763,
+      "hi": 0.30848449250747156,
+      "streams": 500
+    },
+    {
+      "q": 0.1,
+      "k_batches": 1,
+      "records_seen": 200,
+      "block_rate": 0.146,
+      "lo": 0.11774829657860897,
+      "hi": 0.1796499333412706,
+      "streams": 500
+    },
+    {
+      "q": 0.1,
+      "k_batches": 2,
+      "records_seen": 400,
+      "block_rate": 0.172,
+      "lo": 0.1414536049779883,
+      "hi": 0.20754814477828426,
+      "streams": 500
+    },
+    {
+      "q": 0.1,
+      "k_batches": 5,
+      "records_seen": 1000,
+      "block_rate": 0.28,
+      "lo": 0.24243538732541,
+      "hi": 0.32091944482818746,
+      "streams": 500
+    },
+    {
+      "q": 0.1,
+      "k_batches": 10,
+      "records_seen": 2000,
+      "block_rate": 0.43,
+      "lo": 0.38730087857833456,
+      "hi": 0.4737665680159919,
+      "streams": 500
+    },
+    {
+      "q": 0.1,
+      "k_batches": 20,
+      "records_seen": 4000,
+      "block_rate": 0.604,
+      "lo": 0.5604950326399137,
+      "hi": 0.6459190467056583,
+      "streams": 500
+    },
+    {
+      "q": 0.2,
+      "k_batches": 1,
+      "records_seen": 200,
+      "block_rate": 0.276,
+      "lo": 0.23863748141495,
+      "hi": 0.3167783476868947,
+      "streams": 500
+    },
+    {
+      "q": 0.2,
+      "k_batches": 2,
+      "records_seen": 400,
+      "block_rate": 0.388,
+      "lo": 0.34629528411824795,
+      "hi": 0.4314126304326744,
+      "streams": 500
+    },
+    {
+      "q": 0.2,
+      "k_batches": 5,
+      "records_seen": 1000,
+      "block_rate": 0.662,
+      "lo": 0.6194419387868491,
+      "hi": 0.7020876848091384,
+      "streams": 500
+    },
+    {
+      "q": 0.2,
+      "k_batches": 10,
+      "records_seen": 2000,
+      "block_rate": 0.852,
+      "lo": 0.818193200072725,
+      "hi": 0.8804390684815191,
+      "streams": 500
+    },
+    {
+      "q": 0.2,
+      "k_batches": 20,
+      "records_seen": 4000,
+      "block_rate": 0.986,
+      "lo": 0.9713865738597492,
+      "hi": 0.9932022969282127,
+      "streams": 500
+    }
+  ]
+}

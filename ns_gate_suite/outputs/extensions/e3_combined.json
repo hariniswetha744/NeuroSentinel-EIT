@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "n": 200,
+    "r": 0.5,
+    "seed": 13,
+    "reference_batches": 2000,
+    "rule": "block if min(p_cca, p_learned) <= alpha/2",
+    "alpha": 0.05,
+    "runtime_s": 5.2
+  },
+  "rows": [
+    {
+      "case": "Clean (false-block rate)",
+      "severity": 0.0,
+      "trials": 1000,
+      "cca": 0.057,
+      "learned": 0.066,
+      "combined": 0.047
+    },
+    {
+      "case": "F7 Silent mispairing",
+      "severity": 0.1,
+      "trials": 300,
+      "cca": 0.15666666666666668,
+      "learned": 0.19333333333333333,
+      "combined": 0.17333333333333334
+    },
+    {
+      "case": "F7 Silent mispairing",
+      "severity": 0.25,
+      "trials": 300,
+      "cca": 0.3233333333333333,
+      "learned": 0.43666666666666665,
+      "combined": 0.36666666666666664
+    },
+    {
+      "case": "F7 Silent mispairing",
+      "severity": 0.5,
+      "trials": 300,
+      "cca": 0.7066666666666667,
+      "learned": 0.86,
+      "combined": 0.8433333333333334
+    },
+    {
+      "case": "F7 Silent mispairing",
+      "severity": 1.0,
+      "trials": 300,
+      "cca": 0.9066666666666666,
+      "learned": 1.0,
+      "combined": 1.0
+    },
+    {
+      "case": "H1 Dropped EIT frame",
+      "severity": 0.5,
+      "trials": 300,
+      "cca": 0.69,
+      "learned": 0.8666666666666667,
+      "combined": 0.8233333333333334
+    },
+    {
+      "case": "H3 Stale buffer",
+      "severity": 0.5,
+      "trials": 300,
+      "cca": 0.43666666666666665,
+      "learned": 0.8533333333333334,
+      "combined": 0.81
+    },
+    {
+      "case": "H5 Cross-cohort",
+      "severity": 0.5,
+      "trials": 300,
+      "cca": 0.7333333333333333,
+      "learned": 0.8933333333333333,
+      "combined": 0.8533333333333334
+    },
+    {
+      "case": "H6 Class-cond. swap",
+      "severity": 0.5,
+      "trials": 300,
+      "cca": 0.06333333333333334,
+      "learned": 0.06666666666666667,
+      "combined": 0.06333333333333334
+    },
+    {
+      "case": "H4 Electrode perm. (out of scope)",
+      "severity": 1.0,
+      "trials": 300,
+      "cca": 0.07333333333333333,
+      "learned": 0.9466666666666667,
+      "combined": 0.9466666666666667
+    },
+    {
+      "case": "Clean subject-structured",
+      "severity": 0.0,
+      "trials": 1000,
+      "cca": 0.042,
+      "learned": 0.061,
+      "combined": 0.04
+    },
+    {
+      "case": "H2 Within-subject swap",
+      "severity": 0.5,
+      "trials": 300,
+      "cca": 0.34,
+      "learned": 0.23,
+      "combined": 0.2733333333333333
+    },
+    {
+      "case": "H2 Within-subject swap",
+      "severity": 1.0,
+      "trials": 300,
+      "cca": 0.7633333333333333,
+      "learned": 0.49666666666666665,
+      "combined": 0.6666666666666666
+    }
+  ]
+}

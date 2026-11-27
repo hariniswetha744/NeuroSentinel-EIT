@@ -1,0 +1,43 @@
+{
+    "EEG_rows": 150,
+    "EEG_feature_columns": [
+        "Delta",
+        "Theta",
+        "Alpha",
+        "Beta"
+    ],
+    "EEG_metadata_columns": [
+        "Participant",
+        "Run",
+        "Task",
+        "Window",
+        "Onset_seconds",
+        "Duration_seconds"
+    ],
+    "EIT_rows": 1,
+    "EIT_feature_columns": [
+        "Measurement_Count",
+        "Baseline_Voltage_Mean",
+        "Baseline_Voltage_Std",
+        "Anomaly_Voltage_Mean",
+        "Anomaly_Voltage_Std",
+        "Voltage_Change_Mean",
+        "Voltage_Change_Std",
+        "Voltage_Change_MAE",
+        "Voltage_Change_RMS",
+        "Reconstruction_Element_Count",
+        "Reconstruction_Min",
+        "Reconstruction_Max",
+        "Reconstruction_Mean",
+        "Reconstruction_Std",
+        "Reconstruction_RMS",
+        "Positive_Reconstruction_Count",
+        "Negative_Reconstruction_Count"
+    ],
+    "EIT_excluded_QA_columns": [
+        "Region_Mask_Element_Count_QA_Only"
+    ],
+    "artificial_pairing_performed": false,
+    "clinical_fusion_training_ready": false,
+    "status": "FEATURE_PREPARATION_PASSED_PAIRING_NOT_READY"
+}

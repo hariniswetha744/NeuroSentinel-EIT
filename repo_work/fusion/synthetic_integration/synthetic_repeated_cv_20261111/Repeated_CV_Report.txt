@@ -1,0 +1,28 @@
+NEUROSENTINEL SYNTHETIC FUSION REPEATED EVALUATION
+============================================================
+Dataset: Synthetic_Fusion_Benchmark_Data.csv
+Observations: 1000
+Class counts: {1: 502, 0: 498}
+Evaluation: 5-fold stratified CV, repeated 5 times
+Total evaluation folds: 25
+Scaling: fitted separately within each training fold
+Decision fusion: arithmetic mean of EEG and EIT probabilities
+Decision threshold: 0.5
+Target: artificial shared latent state
+Data status: SYNTHETIC_ONLY
+
+MEAN AND STANDARD DEVIATION ACROSS FOLDS
+                Model  Accuracy_Mean  Accuracy_SD  Balanced_Accuracy_Mean  Balanced_Accuracy_SD  Macro_F1_Mean  Macro_F1_SD  ROC_AUC_Mean  ROC_AUC_SD  Fold_Count
+Decision_level_fusion         0.8894     0.018782                0.889361              0.018849       0.889342     0.018822      0.957338    0.012401          25
+             EEG_only         0.8018     0.023224                0.801726              0.023210       0.801572     0.023251      0.893956    0.019517          25
+             EIT_only         0.8514     0.023519                0.851434              0.023514       0.851332     0.023503      0.937201    0.015140          25
+ Feature_level_fusion         0.8908     0.019401                0.890793              0.019485       0.890735     0.019441      0.959090    0.012184          25
+    Majority_baseline         0.5020     0.002500                0.500000              0.000000       0.334219     0.001107           NaN         NaN          25
+
+LIMITATIONS
+- Repeated folds reuse the same synthetic observations.
+- Fold variability is not independent replication.
+- The shared target is generated from an artificial latent variable.
+- This is a software-level architecture comparison only.
+- No real EEG-EIT pairing or patient observations are used.
+- No clinical screening or recurrence prediction is demonstrated.
