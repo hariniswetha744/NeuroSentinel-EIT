@@ -9,7 +9,7 @@ FS = 8  # points at printed size
 
 
 def draw(out):
-    fig, ax = plt.subplots(figsize=(3.35, 2.75)); ax.set_xlim(0, 10); ax.set_ylim(0, 10); ax.axis("off")
+    fig, ax = plt.subplots(figsize=(3.35, 2.35)); ax.set_xlim(0, 10); ax.set_ylim(0, 10); ax.axis("off")
 
     def box(x, y, w, h, t, fc="#ffffff", ec="#444444", bold=False, color="#111"):
         ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.02,rounding_size=0.25", fc=fc, ec=ec, lw=0.9))

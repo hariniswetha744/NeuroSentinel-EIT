@@ -150,9 +150,13 @@ def figure_b_print(df, out, width=5.4, theory=None):
         plt.close(fig)
 
 
-def figure_c_print(levels, rocs, out, width=2.85):
+def figure_c_print(levels, rocs, out, width=2.85, row=False):
+    """row=True: panels side by side at one IEEE column (3.35 in), drawn at print size."""
     with plt.rc_context(_PRINT):
-        fig, (a1, a2) = plt.subplots(2, 1, figsize=(width, 3.0))
+        if row:
+            fig, (a1, a2) = plt.subplots(1, 2, figsize=(width, 1.85))
+        else:
+            fig, (a1, a2) = plt.subplots(2, 1, figsize=(width, 3.0))
         snrs = sorted({int(k.split("_")[1][:-2]) for k in rocs})
         lss = ["-", "--", ":"]
         for i, s in enumerate(snrs):
@@ -162,7 +166,10 @@ def figure_c_print(levels, rocs, out, width=2.85):
                 a1.plot([r["op_far"]], [r["op_tpr"]], marker="o", color=c, ms=3.5, mec="white", mew=0.6)
         a1.plot([0, 1], [0, 1], color=GRAY, lw=0.6, ls=":")
         a1.set_xlabel("False-alarm rate"); a1.set_ylabel("Detection rate"); a1.set_title("(a) ROC", loc="left")
-        a1.legend(frameon=False, loc="lower right", fontsize=6.5, handlelength=1.4, labelspacing=0.1, ncol=2, columnspacing=0.4, handletextpad=0.3)
+        if row:  # encoding explained in the caption: colour = detector, line style = SNR
+            pass
+        else:
+            a1.legend(frameon=False, loc="lower right", fontsize=6.5, handlelength=1.4, labelspacing=0.1, ncol=2, columnspacing=0.4, handletextpad=0.3)
         snr = [l["snr_db"] for l in levels]
         a2.plot(snr, [l["glrt_detection"] for l in levels], color=BLUE, marker="s", label="GLRT det.")
         a2.plot(snr, [l["peak_detection"] for l in levels], color=ORANGE, marker="o", label="Peak det.")
@@ -173,10 +180,19 @@ def figure_c_print(levels, rocs, out, width=2.85):
         a2.axhline(0.05, color=GRAY, lw=0.6, ls="--")
         a2.set_xlabel("SNR$_{δv}$ (dB)"); a2.set_ylabel("Rate"); a2.set_ylim(-0.03, 1.03)
         a2.set_title("(b) At α = 0.05", loc="left")
-        a2.legend(frameon=False, loc="center right", fontsize=6.5, handlelength=1.6, labelspacing=0.25)
-        fig.tight_layout(h_pad=0.6)
-        fig.savefig(out / "figure_C_eit_glrt_print.png", dpi=300, bbox_inches="tight", pad_inches=0.02)
-        fig.savefig(out / "figure_C_eit_glrt_print.pdf", bbox_inches="tight", pad_inches=0.02)
+        if row:
+            a2.legend(frameon=False, loc="center right", fontsize=7, handlelength=1.6, labelspacing=0.2,
+                      handletextpad=0.3, borderaxespad=0.2)
+            a1.set_xticks([0, 0.5, 1]); a2.set_xticks([-10, 0, 10, 20])
+        else:
+            a2.legend(frameon=False, loc="center right", fontsize=6.5, handlelength=1.6, labelspacing=0.25)
+        if row:
+            fig.subplots_adjust(left=0.13, right=0.98, top=0.88, bottom=0.22, wspace=0.42)
+        else:
+            fig.tight_layout(h_pad=0.6, w_pad=0.8)
+        name = "figure_C_eit_glrt_row" if row else "figure_C_eit_glrt_print"
+        fig.savefig(out / f"{name}.png", dpi=300, bbox_inches="tight", pad_inches=0.02)
+        fig.savefig(out / f"{name}.pdf", bbox_inches="tight", pad_inches=0.02)
         plt.close(fig)
 
 
