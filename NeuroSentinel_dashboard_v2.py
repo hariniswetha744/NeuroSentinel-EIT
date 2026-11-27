@@ -54,7 +54,7 @@ def show_table(filename):
         )
 
 overview, paper, extra, eeg, eit, files, fusion, window_comparison = st.tabs([
-    "Overview", "Paper Results (IEEE v14)", "Extensions, Theory & Repair", "EEG Analysis", "EIT Validation",
+    "Overview", "Paper Results (IEEE v20)", "Extensions, Theory & Repair", "EEG Analysis", "EIT Validation",
     "Data Tables", "Fusion Readiness", "EEG Window Comparison"
 ])
 
@@ -84,7 +84,7 @@ def paper_figure(name, caption):
 with paper:
     st.header("Silent Mispairing in EEG–EIT Fusion: Paper Results")
     st.info(
-        "Results behind the IEEE manuscript (v14). Pairing experiments use a synthetic "
+        "Results behind the IEEE manuscript (v20). Pairing experiments use a synthetic "
         "generator, the EIT detector uses simulated pyEIT frames, and the EEG test uses "
         "public PhysioNet data. Software-only; no clinical claim. Every number below is "
         "read from the files in paper_results/, produced by ns_gate_suite/run_all.py."
@@ -176,7 +176,7 @@ with paper:
             )
             paper_figure("figure_2_acquisition.png", "Fig. 2: EEG electrode layout, simulated EIT anomaly, GLRT map, dashboard")
 
-        st.subheader("7. Cost (Section IV-H; table removed from v14)")
+        st.subheader("7. Cost (Section IV-H)")
         ov = paper_csv("table_IV_overhead.csv")
         if ov is not None:
             st.dataframe(ov.round(3), hide_index=True, width="stretch")
@@ -203,12 +203,12 @@ def ext_json(name):
 
 
 with extra:
-    st.header("Extensions after v10: addressing the stated limitations")
+    st.header("Extensions: addressing the stated limitations")
     st.info(
         "Four follow-up experiments. E1–E3 use the same synthetic generator as the paper "
         "(N = 200 records per batch, r = 0.5); Experiment 7 uses real, simultaneously recorded "
         "EEG + NIRS. Every number is read from files in paper_results/extensions/ and "
-        "paper_results/exp7_eeg_nirs.json. E2, E3 and Experiment 7 are summarized in manuscript v11 (Section IV-I, Table V, Section V)."
+        "paper_results/exp7_eeg_nirs.json. E2, E3 and Experiment 7 are reported in manuscript v20 (Section IV-I, Table IV, Section V)."
     )
 
     st.subheader("E2. Accumulating evidence over successive batches")
@@ -314,27 +314,38 @@ with extra:
 
 
     st.divider()
-    st.header("Novelty: power rule and repair (paper v14)")
+    st.header("Novelty: power rule and repair (paper v20)")
     th = ext_json_n("theory_sim.json")
     if th is None:
         st.info("novelty/theory_sim.json not found. Run ns_gate_suite/run_theory.py.")
     else:
         st.subheader("Power and sample-size rule: predicted vs simulated (Fig. 5d)")
         sA, sB = th["summary"]["A"], th["summary"]["B"]
+        st.caption("v20 model: Eq. (7) without the empirical finite-sample factor used up to v19. "
+                   "A pilot re-run (seed 0) and the validation run (seed 41) were both more accurate without it.")
         m = st.columns(3)
-        m[0].metric("Mean error, generator A", f"{100 * sA['mae']:.1f} pts")
-        m[1].metric("Mean error, generator B", f"{100 * sB['mae']:.1f} pts")
+        m[0].metric("Mean error, generator A", f"{100 * sA['mae']:.1f} pts", help=f"Max {100 * sA['max']:.1f} pts; {100 * sA['within_10pts']:.1f}% of settings within 10 pts")
+        m[1].metric("Mean error, generator B", f"{100 * sB['mae']:.1f} pts", help=f"Max {100 * sB['max']:.1f} pts; {100 * sB['within_10pts']:.1f}% of settings within 10 pts")
         ssp = [c["simulated_power_at_N_star"] for c in th["sample_size_checks"]]
         m[2].metric("Simulated power at rule's N* (target 80%)", f"{100 * min(ssp):.0f}–{100 * max(ssp):.0f}%")
         d = pd.DataFrame(th["rows"])
         st.scatter_chart(d, x="predicted", y="empirical", color="family", x_label="Predicted power, Eq. (8)",
                          y_label="Simulated power")
         st.dataframe(pd.DataFrame(th["sample_size_checks"]).round(3), hide_index=True, width="stretch")
-    e8 = paper_json("exp8_theory_real.json")
+        pil = ext_json_n("theory_pilot.json")
+        if pil is not None:
+            st.markdown("**Pilot check of the removed factor (seed 0, separate from validation)**")
+            st.dataframe(pd.DataFrame(pil["summary"]).T.mul(100).round(1)
+                         .rename(index={"pred_with_factor": "With factor (v19)", "pred_without_factor": "Without factor (v20)"},
+                                 columns={"mae": "Mean error (pts)", "max": "Max error (pts)", "within_10pts": "Within 10 pts (%)"}),
+                         width="stretch")
+    e8 = paper_json("exp8_theory_real_v20.json") or paper_json("exp8_theory_real.json")
     if e8 is not None:
         st.subheader("Theory on real EEG–NIRS (Table IV, column 'q = 1 pred.')")
         st.markdown(f"Dependence θ: reference subjects **{e8['reference_half']['theta']:.3f}**, "
-                    f"test subjects **{e8['test_half']['theta']:.3f}**. Prediction rules were fixed before the run.")
+                    f"test subjects **{e8['test_half']['theta']:.3f}**. Measured rates are from the real-data run; θ_test is "
+                    "estimated on the same test trials, so the two-population column is a consistency check, not an "
+                    "independent prediction.")
         d = pd.DataFrame(e8["rows"])
         d["error B (pts)"] = (100 * (d.pred_B_two_population - d.measured)).round(1)
         for c in ("pred_A_practitioner", "pred_B_two_population", "measured"):
@@ -344,6 +355,13 @@ with extra:
                                       "pred_A_practitioner": "Reference only (%)"}), hide_index=True, width="stretch")
         st.caption("Two-population: reference θ for the threshold, test θ for test batches, finite-pool correction. "
                    "Reference only: what a user without test data would predict.")
+        rss = ext_json_n("real_sample_size.json")
+        if rss is not None:
+            t1 = next(r for r in rss["rows"] if r["half"] == "test_half" and r["q"] == 1.0)
+            t5 = next(r for r in rss["rows"] if r["half"] == "test_half" and r["q"] == 0.5)
+            c = st.columns(2)
+            c[0].metric("Records for 80% power, q = 1 (model)", f"{t1['N_star_power80']:,}")
+            c[1].metric("Records for 80% power, q = 0.5 (model)", f"{t5['N_star_power80']:,}")
     rp_ = ext_json_n("repair.json")
     if rp_ is not None:
         st.subheader("Repairing shift faults (Table V)")
@@ -357,13 +375,13 @@ with extra:
                                       "acc_gate_repair": "Acc. repair", "shift_correct_of_repaired": "Right shift",
                                       "median_k_error_when_shift_correct": "Median row error"}),
                      hide_index=True, width="stretch")
-        st.caption("Repair is accepted only if its dependence gain beats the 95th percentile of chance gains on randomly "
-                   "mispaired batches built from trusted pairs, and the repaired batch passes the calibrated test.")
+        st.caption("Repair is accepted only if its dependence gain beats the 95th percentile of chance gains on clean and "
+                   "randomly mispaired batches built from trusted pairs, and the repaired batch passes the calibrated test.")
 
 with overview:
     st.header("Project Overview")
     st.info(
-        "The 'Paper Results' tab holds the results reported in the IEEE manuscript (v10); the "
+        "The 'Paper Results' tab holds the results reported in the IEEE manuscript (v20); the "
         "'Extensions, Theory & Repair' tab holds the follow-up experiments. "
         "The other tabs show earlier archived project results (EIDORS EIT, initial "
         "fusion benchmark), which the manuscript does not use."
@@ -372,15 +390,17 @@ with overview:
     st.subheader("Project status")
     st.markdown(
         "**Done**\n"
-        "- IEEE manuscript v14 (regular and double-blind), 6 pages, IEEE A4 conference template; "
+        "- IEEE manuscript v20 (regular and double-blind), 6 pages, IEEE A4 conference template; "
         "29 references, all after 2010 except the two PhysioNet dataset citations, numbered in order of first citation.\n"
         "- Pairing-validity gate (P1–P9), learned matched-pair baseline, EIT GLRT detector, held-out EEG test (Table III).\n"
         "- Extensions: sequential testing (E2), combined CCA + learned rule (E3), record-level flagging (E1).\n"
-        "- Novelty (v14): power and sample-size rule, Eq. (7)–(8), validated in simulation and on real EEG–NIRS; repair of shift faults (Table V).\n"
-        "- Experiment 7: gate run on real simultaneous EEG + NIRS from 29 subjects (batch sizes 100–450), reported in v11 Section IV-I and Table V.\n\n"
+        "- Novelty: power and sample-size rule, Eq. (7)–(8), validated in simulation and checked on real EEG–NIRS; repair of shift faults (Table V).\n"
+        "- v20 audit: every number traced to scripts and result files; the empirical variance factor in Eq. (7) was removed and all dependent results recomputed.\n"
+        "- Experiment 7: gate run on real simultaneous EEG + NIRS from 29 subjects (batch sizes 100–450), reported in Section IV-I and Table IV.\n"
+        "- AI-use statement included in the Acknowledgment.\n\n"
         "**Open**\n"
-        "- Review v14 with the guide.\n"
-        "- IEEE requires an AI-use statement in the Acknowledgment; v14 has none (removed on request)."
+        "- Co-author approval of v20 and an independent read of Sections III-G and IV-I.\n"
+        "- Check the conference's AI policy, the page count in Word, and the double-blind requirement."
     )
 
     c1, c2 = st.columns(2)
