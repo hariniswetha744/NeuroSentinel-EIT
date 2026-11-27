@@ -6,7 +6,7 @@ cross-covariance by (1 - q), so rho_k^2 -> (1 - q)^2 rho_k^2. The batch Pillai t
 records is approximately normal with
 
     mean  m(q) = theta_q + p d / N,                     theta_q = (1 - q)^2 theta
-    var   v(q) = 4 sum_k rho_kq^2 (1 - rho_kq^2)^2 / N + (2 p d / N^2)(1 - (p + d + 1)/N)^2
+    var   v(q) = 4 sum_k rho_kq^2 (1 - rho_kq^2)^2 / N + 2 p d / N^2
 
 (first term: delta method for the sample canonical correlations; second: the null part).
 With the conformal threshold t = m(0) - z_{1-alpha} sqrt(v(0)), the predicted power is
@@ -29,6 +29,8 @@ from scipy.stats import norm
 
 from .gate import _orth
 
+FINITE_FACTOR = False  # v19 used True
+
 
 def spectrum(x, y):
     """Sample squared canonical correlations."""
@@ -38,7 +40,9 @@ def spectrum(x, y):
 def moments(rho2, N, q, p=4, d=8, pool=None):
     rq = np.asarray(rho2, float) * (1 - q) ** 2
     m = rq.sum() + p * d / N
-    v = 4 * np.sum(rq * (1 - rq) ** 2) / N + (2 * p * d / N ** 2) * (1 - (p + d + 1) / N) ** 2
+    v = 4 * np.sum(rq * (1 - rq) ** 2) / N + 2 * p * d / N ** 2
+    if FINITE_FACTOR:  # v19 empirical factor; dropped in v20 (it shrank the null variance too much)
+        v -= (2 * p * d / N ** 2) * (1 - (1 - (p + d + 1) / N) ** 2)
     if pool:
         v *= max(1 - N / pool, 1e-6)
     return m, v

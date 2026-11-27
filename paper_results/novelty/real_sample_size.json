@@ -1,0 +1,47 @@
+{
+  "alpha": 0.05,
+  "rows": [
+    {
+      "half": "test_half",
+      "theta": 0.040143453633803595,
+      "q": 1.0,
+      "N_star_power80": 698,
+      "N_star_power90": 812
+    },
+    {
+      "half": "test_half",
+      "theta": 0.040143453633803595,
+      "q": 0.5,
+      "N_star_power80": 1118,
+      "N_star_power90": 1347
+    },
+    {
+      "half": "test_half",
+      "theta": 0.040143453633803595,
+      "q": 0.25,
+      "N_star_power80": 2951,
+      "N_star_power90": 3779
+    },
+    {
+      "half": "reference_half",
+      "theta": 0.015109458210256013,
+      "q": 1.0,
+      "N_star_power80": 1884,
+      "N_star_power90": 2189
+    },
+    {
+      "half": "reference_half",
+      "theta": 0.015109458210256013,
+      "q": 0.5,
+      "N_star_power80": 3035,
+      "N_star_power90": 3654
+    },
+    {
+      "half": "reference_half",
+      "theta": 0.015109458210256013,
+      "q": 0.25,
+      "N_star_power80": 8110,
+      "N_star_power90": 10386
+    }
+  ]
+}
